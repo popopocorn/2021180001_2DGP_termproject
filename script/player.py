@@ -17,7 +17,7 @@ class Player:
         events = get_events()
         for event in events:
             if event.type == SDL_QUIT:
-                running = False
+                self.running = False
             elif event.type == SDL_KEYDOWN:
                 if event.key == SDLK_RIGHT:
                     self.player_state = 'walking'
@@ -31,7 +31,7 @@ class Player:
                     self.player_state = 'jump'
                     self.frame = 0
                 elif event.key == SDLK_ESCAPE:
-                    running = False
+                    self.running = False
             elif event.type == SDL_KEYUP and self.player_dy==0:
                 self.player_state = 'idle'
 
@@ -66,27 +66,12 @@ class Player:
     def get_running(self):
         return self.running
 def main():
-    running = True
     open_canvas(800,600,sync=True)
 
 
     player=Player()
-    while player.get_running:
+    while player.get_running():
         player.set_flag()
-        ''' if(player.get_flag()=='idle'):
-                player.play_idle_animation(player.direction, frame)
-            elif(player.get_flag()=='left'):
-                player.play_run_animation(player.get_direction(), frame)
-                if player.get_location()[0]>32:
-                    player.move(-10)
-            elif(player.get_flag()=='right'):
-                player.play_run_animation(player.get_direction(), frame)
-                if player.get_location()[0]<768:
-                    player.move(10)
-            if (player.get_flag()=='idle'):
-                frame = (frame+1)%3
-            else:
-                frame = (frame+1)%4'''
         delay(0.05)
     close_canvas()
 if __name__ == '__main__':
