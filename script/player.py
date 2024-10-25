@@ -24,9 +24,10 @@ class Player:
                     self.player_flag = 'left'
                     self.direction = 'l'
                     frame = 0
-                elif event.key == SDLK_ALTERASE:
+                elif event.key == SDLK_LALT:
                     self.player_flag = 'jump'
                     frame = 0
+
                 elif event.key == SDLK_ESCAPE:
                     running = False
             elif event.type == SDL_KEYUP:
@@ -54,7 +55,8 @@ class Player:
         return self.direction
     def get_flag(self):
         return self.player_flag
-
+    def jump(self):
+        pass
 running = True
 frame = 0
 open_canvas(800,600,sync=True)
