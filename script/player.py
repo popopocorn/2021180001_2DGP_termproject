@@ -37,30 +37,31 @@ class Player:
 
         if self.player_dx==0 and self.player_dy==0:
             self.player_state="idle"
-    def play_run_animation(self, dir, frame):
+    def update_run(self, dir, frame):
         clear_canvas()
         if(dir == 'r'):
             self.walk_motion[frame].composite_draw(0, 'h', self.player_x, self.player_y)
         else:
             self.walk_motion[frame].draw(self.player_x, self.player_y)
         update_canvas()
-    def play_idle_animation(self, dir, frame):
+    def update_idle(self, dir, frame):
         clear_canvas()
         if (dir == 'r'):
             self.idle_motion[frame].composite_draw(0, 'h', self.player_x, self.player_y)
         else:
             self.idle_motion[frame].draw(self.player_x, self.player_y)
         update_canvas()
-
-    def jump(self, frame):
+    def move(self, dx):
+        self.player_x += dx
+    def update_jump(self, frame):
         pass
     def update(self):
         if self.player_state=='idle':
-            pass
-        if self.player_state=='walking' and self.direction=='r':
-            pass
-        if self.player_state=='walking' and self.direction=='l':
-            pass
+            self.update_idle(self.direction, self.frame)
+            self.frame= (self.frame+1)%3
+        if self.player_state=='walking':
+            self.update_run(self.direction, self.frame)
+            self.frame= (self.frame+1)%4
         if self.player_state=='jump':
             pass
     def get_running(self):
@@ -72,6 +73,7 @@ def main():
     player=Player()
     while player.get_running():
         player.set_flag()
+        player.update()
         delay(0.05)
     close_canvas()
 if __name__ == '__main__':
