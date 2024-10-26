@@ -19,14 +19,17 @@ class Player:
             if event.type == SDL_QUIT:
                 self.running = False
             elif event.type == SDL_KEYDOWN:
+
                 if event.key == SDLK_RIGHT:
                     self.player_state = 'walking'
                     self.direction = 'r'
                     self.frame = 0
+                    self.player_dx=10
                 elif event.key == SDLK_LEFT:
                     self.player_state = 'walking'
                     self.direction = 'l'
                     self.frame = 0
+                    self.player_dx = -10
                 elif event.key == SDLK_LALT:
                     self.player_state = 'jump'
                     self.frame = 0
@@ -34,33 +37,37 @@ class Player:
                     self.running = False
             elif event.type == SDL_KEYUP and self.player_dy==0:
                 self.player_state = 'idle'
+                self.player_dx=0
+                self.frame = 0
 
         if self.player_dx==0 and self.player_dy==0:
             self.player_state="idle"
-    def update_run(self, dir, frame):
+            self.frame = 0
+    def update_run(self):
         clear_canvas()
-        if(dir == 'r'):
-            self.walk_motion[frame].composite_draw(0, 'h', self.player_x, self.player_y)
+        if(self.direction == 'r'):
+            self.walk_motion[self.frame].composite_draw(0, 'h', self.player_x, self.player_y)
         else:
-            self.walk_motion[frame].draw(self.player_x, self.player_y)
+            self.walk_motion[self.frame].draw(self.player_x, self.player_y)
         update_canvas()
-    def update_idle(self, dir, frame):
+    def update_idle(self):
         clear_canvas()
-        if (dir == 'r'):
-            self.idle_motion[frame].composite_draw(0, 'h', self.player_x, self.player_y)
+        if (self.direction == 'r'):
+            self.idle_motion[self.frame].composite_draw(0, 'h', self.player_x, self.player_y)
         else:
-            self.idle_motion[frame].draw(self.player_x, self.player_y)
+            self.idle_motion[self.frame].draw(self.player_x, self.player_y)
         update_canvas()
-    def move(self, dx):
-        self.player_x += dx
+    def move(self):
+        self.player_x+=self.player_dx
     def update_jump(self, frame):
         pass
     def update(self):
         if self.player_state=='idle':
-            self.update_idle(self.direction, self.frame)
+            self.update_idle()
             self.frame= (self.frame+1)%3
         if self.player_state=='walking':
-            self.update_run(self.direction, self.frame)
+            self.move()
+            self.update_run()
             self.frame= (self.frame+1)%4
         if self.player_state=='jump':
             pass
@@ -74,7 +81,7 @@ def main():
     while player.get_running():
         player.set_flag()
         player.update()
-        delay(0.05)
+        delay(0.06)
     close_canvas()
 if __name__ == '__main__':
     main()
