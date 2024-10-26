@@ -33,16 +33,31 @@ class Player:
                 elif event.key == SDLK_LALT:
                     self.player_state = 'jump'
                     self.frame = 0
+                elif event.key == SDLK_q:
+                    pass
+                elif event.key == SDLK_w:
+                    pass
+                elif event.key == SDLK_e:
+                    pass
+                elif event.key == SDLK_r:
+                    pass
+                elif event.key == SDLK_a:
+                    pass
+                elif event.key == SDLK_s:
+                    pass
+                elif event.key == SDLK_d:
+                    pass
+                elif event.key == SDLK_f:
+                    pass
                 elif event.key == SDLK_ESCAPE:
                     self.running = False
-            elif event.type == SDL_KEYUP and self.player_dy==0:
+            elif event.type == SDL_KEYUP and self.player_dy==0 and self.player_state!="skill":
                 self.player_state = 'idle'
                 self.player_dx=0
                 self.frame = 0
 
-        if self.player_dx==0 and self.player_dy==0:
-            self.player_state="idle"
-            self.frame = 0
+
+        
     def update_run(self):
         clear_canvas()
         if(self.direction == 'r'):
@@ -54,8 +69,10 @@ class Player:
         clear_canvas()
         if (self.direction == 'r'):
             self.idle_motion[self.frame].composite_draw(0, 'h', self.player_x, self.player_y)
+
         else:
             self.idle_motion[self.frame].draw(self.player_x, self.player_y)
+
         update_canvas()
     def move(self):
         self.player_x+=self.player_dx
