@@ -93,7 +93,7 @@ class Player:
         if self.player_jump:
             self.update_jump()
 
-        print(self.player_jump)
+
 
     def get_running(self):
         return self.running
