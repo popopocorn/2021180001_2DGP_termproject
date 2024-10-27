@@ -3,7 +3,9 @@ from time import *
 
 class Player:
     def __init__(self):
+        self.gravity = 2
         self.player_state='idle'
+        self.player_jump = False
         self.player_dx=0
         self.player_dy=0
         self.player_x=400
@@ -20,44 +22,43 @@ class Player:
                 self.running = False
             elif event.type == SDL_KEYDOWN:
 
-                if event.key == SDLK_RIGHT:
+                if event.key == SDLK_RIGHT and self.player_state !="skill":
                     self.player_state = 'walking'
                     self.direction = 'r'
                     self.frame = 0
                     self.player_dx=10
-                elif event.key == SDLK_LEFT:
+                elif event.key == SDLK_LEFT and self.player_state !="skill":
                     self.player_state = 'walking'
                     self.direction = 'l'
                     self.frame = 0
                     self.player_dx = -10
-                elif event.key == SDLK_LALT:
-                    self.player_state = 'jump'
+                elif event.key == SDLK_LALT and self.player_state !="skill" and self.player_dy==0:
+                    self.player_jump=True
                     self.frame = 0
-                elif event.key == SDLK_q:
-                    pass
-                elif event.key == SDLK_w:
-                    pass
-                elif event.key == SDLK_e:
-                    pass
-                elif event.key == SDLK_r:
-                    pass
-                elif event.key == SDLK_a:
-                    pass
-                elif event.key == SDLK_s:
-                    pass
-                elif event.key == SDLK_d:
-                    pass
-                elif event.key == SDLK_f:
-                    pass
+                elif event.key == SDLK_q and self.player_state !="skill":
+                    print(event.key)
+                elif event.key == SDLK_w and self.player_state !="skill":
+                    print(event.key)
+                elif event.key == SDLK_e and self.player_state !="skill":
+                    print(event.key)
+                elif event.key == SDLK_r and self.player_state !="skill":
+                    print(event.key)
+                elif event.key == SDLK_a and self.player_state !="skill":
+                    print(event.key)
+                elif event.key == SDLK_s and self.player_state !="skill":
+                    print(event.key)
+                elif event.key == SDLK_d and self.player_state !="skill":
+                    print(event.key)
+                elif event.key == SDLK_f and self.player_state !="skill":
+                    print(event.key)
                 elif event.key == SDLK_ESCAPE:
                     self.running = False
-            elif event.type == SDL_KEYUP and self.player_dy==0 and self.player_state!="skill":
-                self.player_state = 'idle'
-                self.player_dx=0
+            elif event.type == SDL_KEYUP :
+                if event.key == SDLK_RIGHT or event.key == SDLK_LEFT:
+                    self.player_dx = 0
+            if self.player_dx == 0 and self.player_dy == 0 and self.player_state !="skill":
+                self.player_state = "idle"
                 self.frame = 0
-
-
-        
     def update_run(self):
         clear_canvas()
         if(self.direction == 'r'):
@@ -76,7 +77,7 @@ class Player:
         update_canvas()
     def move(self):
         self.player_x+=self.player_dx
-    def update_jump(self, frame):
+    def update_jump(self):
         pass
     def update(self):
         if self.player_state=='idle':
@@ -86,8 +87,8 @@ class Player:
             self.move()
             self.update_run()
             self.frame= (self.frame+1)%4
-        if self.player_state=='jump':
-            pass
+        if self.player_jump:
+            self.update_jump()
     def get_running(self):
         return self.running
 def main():
