@@ -46,6 +46,7 @@ class Player:
                 self.player_state = "idle"
                 self.frame = 0
 
+        print(self.player_state)
     def update_run(self):
         clear_canvas()
 
@@ -63,10 +64,16 @@ class Player:
 
     def update_idle(self):
         clear_canvas()
-        if self.direction == 'r':
-            self.idle_motion[self.frame].composite_draw(0, 'h', self.player_x, self.player_y)
+        if not self.player_jump:
+            if self.direction == 'r':
+                self.idle_motion[self.frame].composite_draw(0, 'h', self.player_x, self.player_y)
+            else:
+                self.idle_motion[self.frame].draw(self.player_x, self.player_y)
         else:
-            self.idle_motion[self.frame].draw(self.player_x, self.player_y)
+            if self.direction == 'r':
+                self.jump_motion.composite_draw(0, 'h', self.player_x, self.player_y)
+            else:
+                self.jump_motion.draw(self.player_x, self.player_y)
         update_canvas()
 
     def move(self):
