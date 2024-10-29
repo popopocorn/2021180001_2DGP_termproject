@@ -33,7 +33,7 @@ class Player:
                     self.direction = 'l'
                     self.frame = 0
                     self.player_dx = -10
-                elif event.key == SDLK_LALT and self.player_state != "skill" and self.player_dy == 0:
+                elif event.key == SDLK_LALT and self.player_state != "skill" and self.player_dy == 0 and not self.player_jump:
                     self.player_jump = True
                     self.frame = 0
                     self.player_dy = 15
@@ -54,12 +54,12 @@ class Player:
             if not self.player_jump:
                 self.walk_motion[self.frame].composite_draw(0, 'h', self.player_x, self.player_y)
             else:
-                self.jump_motion.composite_draw(0, 'h', self.player_x, self.player_y)
+                self.jump_motion.composite_draw(0, 'h', self.player_x - 25, self.player_y+5)
         else:
             if not self.player_jump:
-                self.walk_motion[self.frame].draw(self.player_x, self.player_y)
+                self.walk_motion[self.frame].draw(self.player_x - 10, self.player_y)
             else:
-                self.jump_motion.draw(self.player_x, self.player_y)
+                self.jump_motion.draw(self.player_x + 15, self.player_y + 5)
         update_canvas()
 
     def update_idle(self):
@@ -68,12 +68,12 @@ class Player:
             if self.direction == 'r':
                 self.idle_motion[self.frame].composite_draw(0, 'h', self.player_x, self.player_y)
             else:
-                self.idle_motion[self.frame].draw(self.player_x, self.player_y)
+                self.idle_motion[self.frame].draw(self.player_x - 10, self.player_y)
         else:
             if self.direction == 'r':
-                self.jump_motion.composite_draw(0, 'h', self.player_x, self.player_y)
+                self.jump_motion.composite_draw(0, 'h', self.player_x - 25, self.player_y + 5)
             else:
-                self.jump_motion.draw(self.player_x, self.player_y)
+                self.jump_motion.draw(self.player_x + 15, self.player_y + 5)
         update_canvas()
 
     def move(self):
