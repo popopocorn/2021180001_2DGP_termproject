@@ -1,5 +1,5 @@
 #이벤트 체크 함수 e =(종류, 값)
-from sdl2 import SDL_KEYDOWN, SDLK_SPACE, SDLK_RIGHT, SDL_KEYUP, SDLK_LEFT
+from sdl2 import SDL_KEYDOWN, SDLK_SPACE, SDLK_RIGHT, SDL_KEYUP, SDLK_LEFT, SDLK_LALT
 
 
 def start_event(e):
@@ -20,7 +20,8 @@ def left_down(e):
 def left_up(e):
     return e[0] =='INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_LEFT
 
-
+def jump(e):
+    return e[0]=='INPUT' and e[1].type == SDL_KEYDOWN and e[1].key==SDLK_LALT
 
 
 

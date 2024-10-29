@@ -42,7 +42,7 @@ class Player:
             elif event.type == SDL_KEYUP:
                 if event.key == SDLK_RIGHT or event.key == SDLK_LEFT:
                     self.player_dx = 0
-            if self.player_dx == 0 and self.player_dy == 0 and self.player_state != "skill":
+        if self.player_dx == 0 and self.player_dy == 0 and self.player_state != "skill":
                 self.player_state = "idle"
                 self.frame = 0
 

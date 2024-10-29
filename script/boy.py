@@ -1,15 +1,11 @@
-from math import radians
 from pico2d import *
+from time import *
 from state_machine import *
 
 class Idle:
-    @staticmethod # @ - decorator, 함수의 기능 변경 멤버함수의 개념 X
+    @staticmethod
     def enter(obj, e):
-        obj.dx=0
-        if obj.dir >= 0:
-            obj.action = 3
-        else:
-            obj.action = 2
+        obj.player_dx = 0
         obj.frame = 0
         obj.start_time = get_time()
     @staticmethod
@@ -17,85 +13,82 @@ class Idle:
         pass
     @staticmethod
     def do(obj):
-        obj.frame = (obj.frame + 1) % 8
-        if get_time() - obj.start_time > 3:
-            obj.state_machine.add_event(('TIME_OUT', 0))
+        obj.frame = (obj.frame + 1) % 3
     @staticmethod
     def draw(obj):
-        obj.image.clip_draw(obj.frame * 100, obj.action * 100, 100, 100, obj.x, obj.y)
-
-class Sleep:
-    @staticmethod  # @ - decorator, 함수의 기능 변경 멤버함수의 개념 X
-    def enter(obj, e):
-        obj.frame = 0
-
-    @staticmethod
-    def exit(obj):
-        pass
-
-    @staticmethod
-    def do(obj):
-        obj.frame = (obj.frame + 1) % 8
-
-    @staticmethod
-    def draw(obj):
-        if obj.dir >= 0:
-            obj.image.clip_composite_draw(obj.frame * 100, 3 * 100, 100, 100, radians(90), '',obj.x - 25, obj.y - 25, 100, 100)
+        if obj.direction == 'r':
+            obj.idle_motion[obj.frame].composite_draw(0, 'h', obj.player_x, obj.player_y)
         else:
-            obj.image.clip_composite_draw(obj.frame * 100, 2 * 100, 100, 100, radians(-90), '', obj.x + 25,
-                                          obj.y - 25, 100, 100)
-class Run:
+            obj.idle_motion[obj.frame].draw(obj.player_x - 10, obj.player_y)
+
+class Walk:
     @staticmethod
     def enter(obj, e):
-        if right_down(e) or left_up(e):
-            obj.dir = 1
-            obj.dx = 1
-            obj.action = 1
-            obj.frame = 0
-        elif left_down(e) or right_up(e):
-            obj.dx = -1
-            obj.dir = -1
-            obj.action = 0
-            obj.frame = 0
-
+        if right_down(e):
+            obj.player_dx = 10
+            obj.direction = 'r'
+        elif left_down(e):
+            obj.player_dx = -10
+            obj.direction = 'l'
+        obj.frame = 0
     @staticmethod
     def exit(obj):
-
-        pass
+        obj.player_dx = 0
     @staticmethod
     def do(obj):
-        obj.x += obj.dx * 5
-        obj.frame = (obj.frame + 1) % 8
-        pass
+        obj.player_x += obj.player_dx
+        obj.frame = (obj.frame + 1) % 4
     @staticmethod
     def draw(obj):
-        obj.image.clip_draw(obj.frame * 100, obj.action * 100, 100, 100, obj.x, obj.y)
-        pass
-class Boy:
+        if obj.direction == 'r':
+            obj.walk_motion[obj.frame].composite_draw(0, 'h', obj.player_x, obj.player_y)
+        else:
+            obj.walk_motion[obj.frame].draw(obj.player_x - 10, obj.player_y)
+
+class Jump:
+    @staticmethod
+    def enter(obj, e):
+        obj.player_dy = 15
+        obj.player_jump = True
+    @staticmethod
+    def exit(obj):
+        obj.player_jump = False
+        obj.player_dy = 0
+    @staticmethod
+    def do(obj):
+        obj.player_y += obj.player_dy
+        obj.player_dy -= obj.gravity
+        if obj.player_y <= 50:
+            obj.player_y = 50
+            obj.state_machine.add_event(('LAND', 0))
+    @staticmethod
+    def draw(obj):
+        if obj.direction == 'r':
+            obj.jump_motion.composite_draw(0, 'h', obj.player_x - 25, obj.player_y + 5)
+        else:
+            obj.jump_motion.draw(obj.player_x + 15, obj.player_y + 5)
+
+class Player:
     def __init__(self):
-        self.x, self.y = 400, 90
+        self.gravity = 3
+        self.player_x, self.player_y = 400, 50
+        self.player_dx, self.player_dy = 0, 0
+        self.player_jump = False
+        self.direction = 'r'
         self.frame = 0
-        self.dir = 0
-        self.dx = 0
-        self.action = 3
-        self.image = load_image('animation_sheet.png')
+        self.walk_motion = [load_image("walk" + str(x) + ".png") for x in range(4)]
+        self.idle_motion = [load_image("idle" + str(x) + ".png") for x in range(3)]
+        self.jump_motion = load_image("jump.png")
         self.state_machine = StateMachine(self)
         self.state_machine.start(Idle)
-        self.state_machine.set_transitions(
-            {
-                Run : {right_down : Idle, left_down : Idle, right_up : Idle, left_up : Idle},
-                Idle : {right_down: Run, left_down : Run, left_up : Run, right_up : Run,time_out : Sleep},
-                Sleep : {right_down : Run, left_down: Run, right_up: Run, left_up : Run, space_down : Idle},
-
-            }
-        )
+        self.state_machine.set_transitions({
+            Idle: {right_down: Walk, left_down: Walk, space_down: Jump},
+            Walk: {right_up: Idle, left_up: Idle, space_down: Jump},
+            Jump: {('LAND', 0): Idle}
+        })
     def update(self):
         self.state_machine.update()
-
-    def handle_event(self, event):
-        #이건 key, mouse 입력
-        #하지만 tuple형식으로 넘겨줘야함
-        self.state_machine.add_event(('INPUT', event))
-
     def draw(self):
         self.state_machine.draw()
+    def handle_event(self, event):
+        self.state_machine.add_event(('INPUT', event))

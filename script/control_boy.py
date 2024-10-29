@@ -1,8 +1,8 @@
 from pico2d import *
 import random
 
-from grass import Grass
-from boy import Boy
+
+from boy import Player
 # Game object class here
 
 
@@ -30,10 +30,8 @@ def reset_world():
     running = True
     world = []
 
-    grass = Grass()
-    world.append(grass)
 
-    boy = Boy()
+    boy = Player()
     world.append(boy)
 
 
