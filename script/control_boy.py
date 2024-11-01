@@ -2,7 +2,7 @@ from pico2d import *
 import random
 
 
-from boy import Player
+from player import Player
 # Game object class here
 
 
@@ -17,7 +17,7 @@ def handle_events():
             running = False
         else:
             if event.type in(SDL_KEYDOWN, SDL_KEYUP):
-                boy.handle_event(event) #boy에게 event 전달
+                player.handle_event(event) #boy에게 event 전달
 
 
 def reset_world():
@@ -25,14 +25,14 @@ def reset_world():
     global grass
     global team
     global world
-    global boy
+    global player
 
     running = True
     world = []
 
 
-    boy = Player()
-    world.append(boy)
+    player = Player()
+    world.append(player)
 
 
 
