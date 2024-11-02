@@ -6,6 +6,7 @@ from state_machine import *
 class Walk:
     @staticmethod
     def enter(player, e):
+        
         if right_down(e) or left_up(e):
             player.direction = 'r'
             player.player_dx = 5
@@ -45,7 +46,7 @@ class Idle:
 
     @staticmethod
     def do(player):
-        pass
+        player.frame = (player.frame + 1)%3
 
     @staticmethod
     def draw(player):
