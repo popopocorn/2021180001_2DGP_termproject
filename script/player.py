@@ -6,7 +6,7 @@ from state_machine import *
 class Walk:
     @staticmethod
     def enter(player, e):
-        
+
         if right_down(e) or left_up(e):
             player.direction = 'r'
             player.player_dx = 5
