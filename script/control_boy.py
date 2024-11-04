@@ -1,7 +1,7 @@
 from pico2d import *
 import random
 
-
+from mano import  Mano
 from player import Player
 # Game object class here
 
@@ -19,20 +19,21 @@ def handle_events():
             if event.type in(SDL_KEYDOWN, SDL_KEYUP):
                 player.handle_event(event) #boy에게 event 전달
 
-
+    mano.hadle_event(player.get_player_location())
 def reset_world():
     global running
     global grass
     global team
     global world
     global player
-
+    global mano
     running = True
     world = []
 
-
+    mano = Mano()
     player = Player()
     world.append(player)
+    world.append(mano)
 
 
 

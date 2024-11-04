@@ -3,9 +3,7 @@ from sdl2 import *
 
 def start_event(e):
     return e[0]=='START'
-def find_player():
-    pass
-def attack_player():
+def find_player(player_location, monster_location):
     pass
 
 class StateMachine():

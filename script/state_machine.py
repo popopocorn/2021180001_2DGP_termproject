@@ -52,11 +52,11 @@ class StateMachine():
                     self.cur_state.enter(self.obj, e)
                     print(f'Enter into {self.cur_state}')
                     return
-            print(f'        waring: {e}not hadled at state{self.cur_state}')
+            #print(f'        waring: {e}not hadled at state{self.cur_state}')
     def draw(self):
         self.cur_state.draw(self.obj)
     def add_event(self, e):
-        print(f'    debug: ad event{e}')
+        #print(f'    debug: ad event{e}')
 
         self.event_queue.append(e)
     def set_transitions(self, transitions):
