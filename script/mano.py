@@ -14,7 +14,7 @@ class Idle:
     @staticmethod
     def draw(mano):
         if mano.direction == 'r':
-            mano.idle_motion[mano.frame]
+            mano.idle_motion[mano.frame].draw(mano.x, mano.y)
         else:
             pass
 
@@ -57,7 +57,7 @@ class Attack():
 class Mano:
     def __init__(self):
         self.x=600
-        self.y=50
+        self.y=65
         self.hp=300
         self.idle_motion =[load_image("mano_idle"+str(i)+".png") for i in range(6)]
         #self.skill_motion=[load_image("skill"+str(i)+".png") for i in range(10)]
