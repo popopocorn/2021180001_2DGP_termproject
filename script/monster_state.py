@@ -5,6 +5,8 @@ def start_event(e):
     return e[0]=='START'
 def find_player(player_location, monster_location):
     pass
+def can_attack():
+    pass
 
 class StateMachine():
     def __init__(self, obj):

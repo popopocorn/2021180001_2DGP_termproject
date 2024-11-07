@@ -60,7 +60,7 @@ class Mano:
         self.y=65
         self.hp=300
         self.idle_motion =[load_image("mano_idle"+str(i)+".png") for i in range(6)]
-        #self.skill_motion=[load_image("skill"+str(i)+".png") for i in range(10)]
+        self.skill_motion=[load_image("mano_skill"+str(i)+".png") for i in range(10)]
         self.direction = 'r'
         self.frame = 0
         self.state_machine = StateMachine(self)
