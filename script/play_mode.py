@@ -14,7 +14,8 @@ import game_framework
 
 def handle_events():
 
-
+    global player_jump
+    player_jump = player.get_jump()
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:

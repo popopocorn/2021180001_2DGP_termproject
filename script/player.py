@@ -3,9 +3,13 @@ from time import *
 from state_machine import *
 import game_framework
 
-TIME_PER_ACTION = [0.5, 1.0]
+TIME_PER_ACTION = [0.5, 1.0, 0.78]
 ACTION_PER_TIME = [1.0/i for i in TIME_PER_ACTION]
-FRAMES_PER_ACTION = [4, 3] # walk, idle
+FRAMES_PER_ACTION = [4, 3, 5] # walk, idle
+
+aura_blade_y = [0, -0, -5, 10, 0]
+aura_blade_x = [0, -30, -30, -0, 0]
+
 
 class Walk:
     @staticmethod
@@ -76,18 +80,24 @@ class Player:
         self.player_dx = 0
         self.player_dy = 0
         self.player_x = 200
-        self.player_y = 50
+        self.player_y = 55
         self.walk_motion = [load_image("walk" + str(x) + ".png") for x in range(4)]
         self.idle_motion = [load_image("idle" + str(x) + ".png") for x in range(3)]
         self.jump_motion = load_image(("jump.png"))
+
+        self.skill_motion=0
+        self.aura_blade_motion = [load_image("auraBlade" +str(i) +".png") for i in range(5)]
+
         self.direction = 'r'
         self.frame = 0
         self.state_machine=StateMachine(self)
         self.state_machine.start(Idle)
         self.state_machine.set_transitions(
             {
-                Walk: {right_down: Idle, left_down: Idle, right_up: Idle, left_up: Idle},
-                Idle: {right_down: Walk, left_down: Walk, left_up: Walk, right_up: Walk},
+                Walk: {right_down: Idle, left_down: Idle, right_up: Idle, left_up: Idle, skill_down: Skill},
+                Idle: {right_down: Walk, left_down: Walk, left_up: Walk, right_up: Walk, skill_down: Skill},
+                Skill: {time_out: Wait},
+                Wait: {right_down: Walk, left_down: Walk, skill_down: Skill},
             }
         )
 
@@ -116,3 +126,56 @@ class Player:
                 self.player_y = 50
                 self.player_jump = False
                 self.player_dy = 0  # 점프 속도 초기화
+    def get_jump(self):
+        return self.player_jump
+
+
+class Skill:
+    @staticmethod
+    def enter(player, e):
+        if e[1].key==SDLK_q:
+            player.skill_motion = 1
+    def exit(self):
+        pass
+    @staticmethod
+    def do(player):
+        player.frame = (player.frame + FRAMES_PER_ACTION[player.skill_motion + 1] * ACTION_PER_TIME[player.skill_motion + 1] * game_framework.frame_time) % \
+                       FRAMES_PER_ACTION[player.skill_motion + 1]
+        if int(player.frame) ==FRAMES_PER_ACTION[player.skill_motion + 1] - 1:
+            player.state_machine.add_event(('TIME_OUT', 0))
+    @staticmethod
+    def draw(player):
+        if player.skill_motion == 1:
+            if player.direction == 'r':
+                player.aura_blade_motion[int(player.frame)].composite_draw(0, 'h', player.player_x + aura_blade_x[int(player.frame)], player.player_y + aura_blade_y[int(player.frame)])
+            else:
+                player.aura_blade_motion[int(player.frame)].draw(player.player_x - 20 - aura_blade_x[int(player.frame)], player.player_y + aura_blade_y[int(player.frame)])
+
+
+class Wait:
+    @staticmethod
+    def enter(player, e):
+        player.frame = 0
+
+    def exit(self):
+        pass
+
+    @staticmethod
+    def do(player):
+        player.frame = (player.frame + FRAMES_PER_ACTION[1] * ACTION_PER_TIME[1] * game_framework.frame_time) % \
+                       FRAMES_PER_ACTION[1]
+
+    @staticmethod
+    def draw(player):
+        if not player.player_jump:
+            if player.direction == 'r':
+                player.idle_motion[int(player.frame)].composite_draw(0, 'h', player.player_x, player.player_y)
+            else:
+                player.idle_motion[int(player.frame)].draw(player.player_x - 20, player.player_y)
+        else:
+            if player.direction == 'r':
+                player.jump_motion.composite_draw(0, 'h', player.player_x - 25, player.player_y + 5)
+            else:
+                player.jump_motion.draw(player.player_x + 15, player.player_y + 5)
+
+
