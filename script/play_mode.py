@@ -3,12 +3,12 @@
 from pico2d import *
 import random
 
-from grass import Grass
-from boy import Boy
+
+from player import Player
+from mano import Mano
 import game_world
 import game_framework
-import title_mode
-import item_mode
+
 # Game object class here
 
 
@@ -20,28 +20,22 @@ def handle_events():
         if event.type == SDL_QUIT:
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
-            game_framework.change_mode(title_mode)
+            pass
         elif event.type == SDL_KEYDOWN and event.key == SDLK_i:
-            game_framework.push_mode(item_mode)
+            pass
 
         else:
             if event.type in(SDL_KEYDOWN, SDL_KEYUP):
-                boy.handle_event(event) #boy에게 event 전달
+                player.handle_event(event) #boy에게 event 전달
 
 
 def init():
-    global running
-    global grass
-    global team
-    global boy
+    global player
 
-    running = True
-
-
-    grass = Grass()
-    game_world.add_object(grass, 0)
-    boy = Boy()
-    game_world.add_object(boy, 1)
+    mano = Mano()
+    game_world.add_object(mano, 0)
+    player = Player()
+    game_world.add_object(player, 1)
 
 
 def draw():
