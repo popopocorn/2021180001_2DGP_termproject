@@ -3,12 +3,13 @@ from time import *
 from state_machine import *
 import game_framework
 
-TIME_PER_ACTION = [0.5, 1.0, 0.78]
+TIME_PER_ACTION = [0.5, 1.0, 0.68]
 ACTION_PER_TIME = [1.0/i for i in TIME_PER_ACTION]
 FRAMES_PER_ACTION = [4, 3, 5] # walk, idle
 
-aura_blade_y = [0, -0, -5, 10, 0]
+aura_blade_y = [0, 0, -12, 15, 15]
 aura_blade_x = [0, -30, -30, -0, 0]
+
 
 
 class Walk:
@@ -133,15 +134,17 @@ class Player:
 class Skill:
     @staticmethod
     def enter(player, e):
+        player.frame=0
+        player.start_time = get_time()
         if e[1].key==SDLK_q:
             player.skill_motion = 1
     def exit(self):
         pass
     @staticmethod
     def do(player):
-        player.frame = (player.frame + FRAMES_PER_ACTION[player.skill_motion + 1] * ACTION_PER_TIME[player.skill_motion + 1] * game_framework.frame_time) % \
-                       FRAMES_PER_ACTION[player.skill_motion + 1]
-        if int(player.frame) ==FRAMES_PER_ACTION[player.skill_motion + 1] - 1:
+        if player.frame < FRAMES_PER_ACTION[1]+1:
+            player.frame = (player.frame + FRAMES_PER_ACTION[player.skill_motion + 1] * ACTION_PER_TIME[player.skill_motion + 1] * game_framework.frame_time)
+        if get_time() - player.start_time >= TIME_PER_ACTION[player.skill_motion+1]:
             player.state_machine.add_event(('TIME_OUT', 0))
     @staticmethod
     def draw(player):
@@ -155,6 +158,7 @@ class Skill:
 class Wait:
     @staticmethod
     def enter(player, e):
+
         player.frame = 0
 
     def exit(self):
