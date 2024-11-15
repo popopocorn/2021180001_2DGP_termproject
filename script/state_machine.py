@@ -19,9 +19,12 @@ def left_down(e):
 def left_up(e):
     return e[0] =='INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_LEFT
 def skill_down(e):
-    return  e[0]=='INPUT' and e[1].type == SDL_KEYDOWN and\
+    if e[0]=='INPUT' and e[1].type == SDL_KEYDOWN and\
     e[1].key==SDLK_q or e[1].key==SDLK_w or e[1].key==SDLK_e or e[1].key==SDLK_r or\
-    e[1].key == SDLK_a or e[1].key==SDLK_s or e[1].key==SDLK_d or e[1].key==SDLK_f
+    e[1].key == SDLK_a or e[1].key==SDLK_s or e[1].key==SDLK_d or e[1].key==SDLK_f:
+        return True
+    else:
+        return False
 
 
 
@@ -36,7 +39,7 @@ class StateMachine():
     def start(self, state):
         self.cur_state = state # 시작 상태를 받아 그걸로 현재 상태를 정의
         self.cur_state.enter(self.obj, ('START', 0))
-        print(f'Enter into {state}')
+        #print(f'Enter into {state}')
     def update(self):
         self.cur_state.do(self.obj)
         if self.event_queue:
@@ -45,11 +48,11 @@ class StateMachine():
             #상태 변환 테이블을 이용
             for check_event, next_state in self.transitions[self.cur_state].items():
                 if check_event(e):
-                    print(f'Exit from{self.cur_state}')
+                    #print(f'Exit from{self.cur_state}')
                     self.cur_state.exit(self.obj)
                     self.cur_state = next_state
                     self.cur_state.enter(self.obj, e)
-                    print(f'Enter into {self.cur_state}')
+                    #print(f'Enter into {self.cur_state}')
                     return
             #print(f'        waring: {e}not hadled at state{self.cur_state}')
     def draw(self):

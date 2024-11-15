@@ -28,15 +28,15 @@ def handle_events():
         else:
             if event.type in(SDL_KEYDOWN, SDL_KEYUP):
                 player.handle_event(event) #boy에게 event 전달
-
+    mano.handle_events(player.get_player_location())
 
 def init():
-    global player
+    global player, mano
 
     mano = Mano()
-    game_world.add_object(mano, 0)
+    game_world.add_object(mano, 1)
     player = Player()
-    game_world.add_object(player, 1)
+    game_world.add_object(player, 2)
 
 
 def draw():

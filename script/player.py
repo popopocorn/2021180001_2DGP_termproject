@@ -3,13 +3,15 @@ from time import *
 from state_machine import *
 import game_framework
 
-TIME_PER_ACTION = [0.5, 1.0, 0.68]
+TIME_PER_ACTION = [0.5, 1.0, 0.68, 0.5]
 ACTION_PER_TIME = [1.0/i for i in TIME_PER_ACTION]
-FRAMES_PER_ACTION = [4, 3, 5] # walk, idle
+FRAMES_PER_ACTION = [4, 3, 5, 7] # walk, idle
 
 aura_blade_y = [0, 0, -12, 15, 15]
 aura_blade_x = [0, -30, -30, -0, 0]
 
+brandish_x = [-30,-30, -10, -10, -30, 0, 0]
+brandish_y = [0, 0, 20, 20, 20, 10, 5]
 
 
 class Walk:
@@ -81,13 +83,14 @@ class Player:
         self.player_dx = 0
         self.player_dy = 0
         self.player_x = 200
-        self.player_y = 55
+        self.player_y = 56
         self.walk_motion = [load_image("walk" + str(x) + ".png") for x in range(4)]
         self.idle_motion = [load_image("idle" + str(x) + ".png") for x in range(3)]
         self.jump_motion = load_image(("jump.png"))
 
         self.skill_motion=0
         self.aura_blade_motion = [load_image("auraBlade" +str(i) +".png") for i in range(5)]
+        self.brandish_motion = [load_image("brandish" + str(i)+".png") for i in range(7)]
 
         self.direction = 'r'
         self.frame = 0
@@ -111,7 +114,7 @@ class Player:
     def handle_event(self, event):
         if event.type == SDL_KEYDOWN and event.key == SDLK_LALT and not self.player_jump:
             self.player_jump=True
-            self.player_dy=20
+            self.player_dy=25
         self.state_machine.add_event(('INPUT', event))
     def get_player_location(self):
         return self.player_x
@@ -124,7 +127,7 @@ class Player:
 
             # 바닥에 도달했을 때
             if self.player_y <= 50:
-                self.player_y = 50
+                self.player_y = 56
                 self.player_jump = False
                 self.player_dy = 0  # 점프 속도 초기화
     def get_jump(self):
@@ -138,14 +141,22 @@ class Skill:
         player.start_time = get_time()
         if e[1].key==SDLK_q:
             player.skill_motion = 1
+        elif e[1].key==SDLK_w:
+            player.skill_motion = 2
     def exit(self):
         pass
     @staticmethod
     def do(player):
-        if player.frame < FRAMES_PER_ACTION[1]+1:
-            player.frame = (player.frame + FRAMES_PER_ACTION[player.skill_motion + 1] * ACTION_PER_TIME[player.skill_motion + 1] * game_framework.frame_time)
-        if get_time() - player.start_time >= TIME_PER_ACTION[player.skill_motion+1]:
-            player.state_machine.add_event(('TIME_OUT', 0))
+        if player.skill_motion == 1:
+            if player.frame < FRAMES_PER_ACTION[1]+1:
+                player.frame = (player.frame + FRAMES_PER_ACTION[player.skill_motion + 1] * ACTION_PER_TIME[player.skill_motion + 1] * game_framework.frame_time)
+            if get_time() - player.start_time >= TIME_PER_ACTION[player.skill_motion+1]:
+                player.state_machine.add_event(('TIME_OUT', 0))
+        if player.skill_motion == 2:
+            if player.frame < FRAMES_PER_ACTION[2]+1:
+                player.frame = (player.frame + FRAMES_PER_ACTION[player.skill_motion + 1] * ACTION_PER_TIME[player.skill_motion + 1] * game_framework.frame_time)
+            if get_time() - player.start_time >= TIME_PER_ACTION[player.skill_motion+1]:
+                player.state_machine.add_event(('TIME_OUT', 0))
     @staticmethod
     def draw(player):
         if player.skill_motion == 1:
@@ -153,7 +164,11 @@ class Skill:
                 player.aura_blade_motion[int(player.frame)].composite_draw(0, 'h', player.player_x + aura_blade_x[int(player.frame)], player.player_y + aura_blade_y[int(player.frame)])
             else:
                 player.aura_blade_motion[int(player.frame)].draw(player.player_x - 20 - aura_blade_x[int(player.frame)], player.player_y + aura_blade_y[int(player.frame)])
-
+        elif player.skill_motion == 2:
+            if player.direction == 'r':
+                player.brandish_motion[int(player.frame)].composite_draw(0, 'h', player.player_x + brandish_x[int(player.frame)], player.player_y+brandish_y[int(player.frame)])
+            else:
+                player.brandish_motion[int(player.frame)].draw(player.player_x + brandish_x[int(player.frame)], player.player_y+brandish_y[int(player.frame)])
 
 class Wait:
     @staticmethod

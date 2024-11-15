@@ -1,12 +1,21 @@
 #이벤트 체크 함수 e =(종류, 값)
 from sdl2 import *
 
+
+
+
 def start_event(e):
     return e[0]=='START'
-def find_player(player_location, monster_location):
-    pass
-def can_attack():
-    pass
+
+def time_out(e):
+    return e[0] =='TIME_OUT'
+
+def can_attack(e):
+    if (e[1][0] - 200 < e[1][1]) and (e[1][1] < e[1][0] + 200) and (e[1][0], e[1][1]) != (0, 0):
+
+        print("can")
+        return True
+
 
 class StateMachine():
     def __init__(self, obj):
@@ -25,7 +34,7 @@ class StateMachine():
             for check_event, next_state in self.transitions[self.cur_state].items():
                 if check_event(e):
                     print(f'Exit from{self.cur_state}')
-                    self.cur_state.exit(self.obj)
+                    self.cur_state.exit(self.obj, e)
                     self.cur_state = next_state
                     self.cur_state.enter(self.obj, e)
                     print(f'Enter into {self.cur_state}')
