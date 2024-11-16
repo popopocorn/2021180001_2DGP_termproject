@@ -2,6 +2,7 @@ from pico2d import *
 from monster_state import *
 import game_framework
 from script.state_machine import time_out
+from config import debug_flag
 
 TIME_PER_ACTION = [1.0, 1.0, 1.0]
 ACTION_PER_TIME = [1.0/i for i in TIME_PER_ACTION]
@@ -112,5 +113,10 @@ class Mano:
             self.dx=1
 
         self.state_machine.add_event(('INPUT', (player_location, self.x)))
+
+    def get_bb(self):
+        return self.x -70, self.y - 50, self.x+60, self.y+55
     def draw(self):
         self.state_machine.draw()
+        if debug_flag:
+            draw_rectangle(*self.get_bb())

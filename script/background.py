@@ -1,4 +1,5 @@
 from pico2d import *
+from config import debug_flag
 class Platform:
     def __init__(self,x=1000,y=70):
         self.platform = load_image('21.png')
@@ -7,7 +8,8 @@ class Platform:
         self.platform.draw(self.platformxy[0], self.platformxy[1], 43, 50)
         self.platform.composite_draw(0, 'h', self.platformxy[0]-43, self.platformxy[1], 43, 50)
         self.platform.composite_draw(0, 'h', self.platformxy[0]-43-21.5, self.platformxy[1], 43, 50)
-        draw_rectangle(*self.get_bb())
+        if debug_flag:
+            draw_rectangle(*self.get_bb())
     def update(self):
         pass
     def get_bb(self):

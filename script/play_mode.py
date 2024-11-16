@@ -13,9 +13,10 @@ import game_framework
 
 def handle_events():
 
-    global player_jump
+    global player_jump, mano_event_time
     player_jump = player.get_jump()
     events = get_events()
+    curr_time=get_time()
     for event in events:
         if event.type == SDL_QUIT:
             game_framework.quit()
@@ -27,11 +28,13 @@ def handle_events():
         else:
             if event.type in(SDL_KEYDOWN, SDL_KEYUP):
                 player.handle_event(event) #boy에게 event 전달
-    mano.handle_events(player.get_player_location())
+    if curr_time - mano_event_time >= 2.0:
+        mano.handle_events(player.get_player_location())
+        mano_event_time = get_time()
 
 def init():
-    global player, mano
-
+    global player, mano, mano_event_time
+    mano_event_time = 0
     mano = Mano()
     game_world.add_object(mano, 1)
     player = Player()

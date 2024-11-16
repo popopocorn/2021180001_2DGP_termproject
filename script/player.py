@@ -2,6 +2,7 @@ from pico2d import *
 from time import *
 from state_machine import *
 import game_framework
+from config import debug_flag
 
 TIME_PER_ACTION = [0.5, 1.0, 0.68, 0.5]
 ACTION_PER_TIME = [1.0/i for i in TIME_PER_ACTION]
@@ -109,7 +110,8 @@ class Player:
 
     def draw(self):
         self.state_machine.draw()
-        draw_rectangle(*self.get_bb())
+        if debug_flag:
+            draw_rectangle(*self.get_bb())
     def update(self):
         if(self.player_x +10 <self.temp_xy[0] or self.player_x -20 > self.temp_xy[2]):
             self.ground=56
