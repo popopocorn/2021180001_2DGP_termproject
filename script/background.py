@@ -1,7 +1,7 @@
 from pico2d import *
 from config import *
 class Platform:
-    def __init__(self,x=1000,y=120):
+    def __init__(self,x=1050,y=120):
         self.platform = load_image('resource\\21.png')
         self.platformxy = [x, y+up]
     def draw(self):

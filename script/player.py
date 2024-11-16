@@ -1,8 +1,10 @@
 from pico2d import *
 from time import *
 from state_machine import *
+import game_world
 import game_framework
 from config import *
+from skill import *
 
 TIME_PER_ACTION = [0.5, 1.0, 0.68, 0.5]
 ACTION_PER_TIME = [1.0/i for i in TIME_PER_ACTION]
@@ -161,6 +163,8 @@ class Skill:
         player.start_time = get_time()
         if e[1].key==SDLK_q:
             player.skill_motion = 1
+            skill=Aura_blade(player.player_x, player.player_y)
+            game_world.add_skill(skill)
         elif e[1].key==SDLK_w:
             player.skill_motion = 2
     def exit(self):

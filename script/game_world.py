@@ -1,4 +1,4 @@
-world = [[] for _ in range(4)]
+world = [[] for _ in range(4)] #0bg, 1mob 2 player 3 effect
 collision_pairs = {}
 
 def add_collision_pair(group, a, b):

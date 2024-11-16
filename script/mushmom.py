@@ -4,10 +4,10 @@ import game_framework
 from script.state_machine import time_out
 from config import *
 
-TIME_PER_ACTION = [1.0, 1.0, 2.0]
+TIME_PER_ACTION = [1.0, 1.0, 1.5]
 ACTION_PER_TIME = [1.0/i for i in TIME_PER_ACTION]
-FRAMES_PER_ACTION = [4, 5 ,8] # idle, walk, skill
-Action_y = [0, 0, 0, 20, 30, 30, 20, 0]
+FRAMES_PER_ACTION = [4, 5 ,10] # idle, walk, skill
+Action_y = [0, 0, 0, 20, 30, 30, 20, 0, 0]
 class Idle:
     @staticmethod
     def enter(mob, e):
