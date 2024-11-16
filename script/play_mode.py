@@ -1,9 +1,8 @@
-
-
+from django.utils.termcolors import background
 from pico2d import *
 import random
 
-
+from background import *
 from player import Player
 from mano import Mano
 import game_world
@@ -37,6 +36,15 @@ def init():
     game_world.add_object(mano, 1)
     player = Player()
     game_world.add_object(player, 2)
+    background = Background()
+    game_world.add_object(background, 0)
+    platforms = [Platform(), Platform(900, 120),  Platform(750, 120),  Platform(600, 120),  Platform(450, 120),\
+                 Platform(300, 120), Platform(150, 70)]
+    for platform in platforms:
+        game_world.add_object(platform, 0)
+    game_world.add_collision_pair("player:platform", player, None)
+    for platform in platforms:
+        game_world.add_collision_pair("player:platform", None, platform)
 
 
 def draw():
@@ -49,6 +57,7 @@ def finish():
 
 def update():
     game_world.update()
+    game_world.handle_collisions()
 
 def pause():
     pass

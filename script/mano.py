@@ -62,14 +62,14 @@ class Attack():
         mano.start_time = get_time()
     @staticmethod
     def exit(mano, e):
-        pass
+        mano.start_time=0
 
     @staticmethod
     def do(mano):
         mano.frame = (mano.frame + FRAMES_PER_ACTION[2] * ACTION_PER_TIME[2] * game_framework.frame_time) % \
                      FRAMES_PER_ACTION[2]
-        if get_time() - mano.start_time > 1:
-            mano.state_machine.add_event(("TIME_OUT", (0, 0)))
+        if mano.frame >= FRAMES_PER_ACTION[2] -1 :
+            mano.state_machine.add_event(("DONE", (0, 0)))
 
     @staticmethod
     def draw(mano):
@@ -97,7 +97,7 @@ class Mano:
         self.state_machine.set_transitions(
             {
                 Trace:{can_attack: Attack},
-                Attack:{time_out: Trace},
+                Attack:{Done: Trace},
                 Idle:{time_out: Trace},
             }
         )
