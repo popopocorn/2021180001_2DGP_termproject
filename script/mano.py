@@ -2,7 +2,7 @@ from pico2d import *
 from monster_state import *
 import game_framework
 from script.state_machine import time_out
-from config import debug_flag
+from config import *
 
 TIME_PER_ACTION = [1.0, 1.0, 1.0]
 ACTION_PER_TIME = [1.0/i for i in TIME_PER_ACTION]
@@ -80,16 +80,16 @@ class Attack():
             mano.skill_motion[int(mano.frame)].draw(mano.x, mano.y + 31, 150, 150)
 
 
-class Mano:
+class mano:
     def __init__(self):
         self.x=600
-        self.y=65
+        self.y=115+up
         self.delay=0
         self.run_speed = ((5 * 1000) / 3600) * 10 / 0.3
         self.hp=300
-        self.idle_motion =[load_image("mano_idle"+str(i)+".png") for i in range(8)]
-        self.move_motion = [load_image("mano_move" + str(i) + ".png") for i in range(6)]
-        self.skill_motion=[load_image("mano_skill"+str(i)+".png") for i in range(10)]
+        self.idle_motion =[load_image("resource\\mano_idle"+str(i)+".png") for i in range(8)]
+        self.move_motion = [load_image("resource\\mano_move" + str(i) + ".png") for i in range(6)]
+        self.skill_motion=[load_image("resource\\mano_skill"+str(i)+".png") for i in range(10)]
         self.direction = 'r'
         self.dx=0
         self.frame = 0

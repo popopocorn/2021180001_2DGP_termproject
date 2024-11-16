@@ -4,9 +4,10 @@ import random
 
 from background import *
 from player import Player
-from mano import Mano
+from mano import mano
 import game_world
 import game_framework
+import play_mode_2
 
 # Game object class here
 
@@ -21,10 +22,11 @@ def handle_events():
         if event.type == SDL_QUIT:
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
-            pass
+            game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_i:
             pass
-
+        elif event.type == SDL_KEYDOWN and event.key == SDLK_SPACE:
+            game_framework.change_mode(play_mode_2)
         else:
             if event.type in(SDL_KEYDOWN, SDL_KEYUP):
                 player.handle_event(event) #boy에게 event 전달
@@ -35,14 +37,14 @@ def handle_events():
 def init():
     global player, mano, mano_event_time
     mano_event_time = 0
-    mano = Mano()
+    mano = mano()
     game_world.add_object(mano, 1)
     player = Player()
     game_world.add_object(player, 2)
-    background = Background()
+    background = Background1()
     game_world.add_object(background, 0)
-    platforms = [Platform(), Platform(900, 120),  Platform(750, 120),  Platform(600, 120),  Platform(450, 120),\
-                 Platform(300, 120), Platform(150, 70)]
+    platforms = [Platform(), Platform(900, 170),  Platform(750, 170),  Platform(600, 170),
+                 Platform(450, 170), Platform(300, 170), Platform(150, 120)]
     for platform in platforms:
         game_world.add_object(platform, 0)
     game_world.add_collision_pair("player:platform", player, None)

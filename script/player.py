@@ -2,7 +2,7 @@ from pico2d import *
 from time import *
 from state_machine import *
 import game_framework
-from config import debug_flag
+from config import *
 
 TIME_PER_ACTION = [0.5, 1.0, 0.68, 0.5]
 ACTION_PER_TIME = [1.0/i for i in TIME_PER_ACTION]
@@ -38,7 +38,7 @@ class Walk:
     def draw(player):
         if player.direction == 'r':
             if not player.player_jump:
-                player.walk_motion[int(player.frame)].composite_draw(0, 'h', player.player_x, player.player_y)
+                player.walk_motion[int(player.frame)].composite_draw(0, 'h', player.player_x + 10, player.player_y)
             else:
                 player.jump_motion.composite_draw(0, 'h', player.player_x - 25, player.player_y + 5)
         else:
@@ -84,16 +84,16 @@ class Player:
         self.player_dx = 0
         self.player_dy = 0
         self.player_x = 200
-        self.player_y = 56
-        self.ground=56
+        self.player_y = 106+up
+        self.ground=106+up
         self.temp_xy=[0, 0, 0, 0]
-        self.walk_motion = [load_image("walk" + str(x) + ".png") for x in range(4)]
-        self.idle_motion = [load_image("idle" + str(x) + ".png") for x in range(3)]
-        self.jump_motion = load_image(("jump.png"))
+        self.walk_motion = [load_image("resource\\walk" + str(x) + ".png") for x in range(4)]
+        self.idle_motion = [load_image("resource\\idle" + str(x) + ".png") for x in range(3)]
+        self.jump_motion = load_image(("resource\\jump.png"))
 
         self.skill_motion=0
-        self.aura_blade_motion = [load_image("auraBlade" +str(i) +".png") for i in range(5)]
-        self.brandish_motion = [load_image("brandish" + str(i)+".png") for i in range(7)]
+        self.aura_blade_motion = [load_image("resource\\auraBlade" +str(i) +".png") for i in range(5)]
+        self.brandish_motion = [load_image("resource\\brandish" + str(i)+".png") for i in range(7)]
 
         self.direction = 'r'
         self.frame = 0
@@ -114,7 +114,7 @@ class Player:
             draw_rectangle(*self.get_bb())
     def update(self):
         if(self.player_x +10 <self.temp_xy[0] or self.player_x -20 > self.temp_xy[2]):
-            self.ground=56
+            self.ground=106+up
         if self.player_y>self.ground:
             self.player_jump=True
         self.state_machine.update()
@@ -128,7 +128,7 @@ class Player:
     def get_player_location(self):
         return self.player_x
 
-    def update_jump(self, y=56):
+    def update_jump(self, y):
         if self.player_jump:
             # 점프 속도를 시간 프레임에 따라 계산
             self.player_y += self.player_dy * self.jump_speed * game_framework.frame_time
@@ -151,7 +151,7 @@ class Player:
             if self.player_y>=self.temp_xy[3] + 30:
                 self.ground=self.temp_xy[3]+30
             else:
-                self.ground=56
+                self.ground=106+up
 
 
 class Skill:
