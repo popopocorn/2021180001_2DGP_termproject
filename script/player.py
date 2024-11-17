@@ -79,10 +79,17 @@ class Idle:
 class Player:
     def __init__(self):
         self.run_speed = ((5 * 1000) / 3600) * 10 / 0.3
-        self.hp=100
+        self.hp=1000
+        self.max_mp=250
+        self.mp = self.max_mp
+        self.mpup = 1
+        self.jump_speed = ((5 * 1000) / 3600) * 10 / 0.3
+        self.non_hit_time_now = get_time()
+        self.non_hit_time = 1
+
         self.gravity = 3
         self.player_jump = False
-        self.jump_speed = ((5 * 1000) / 3600) * 10 / 0.3
+
         self.player_dx = 0
         self.player_dy = 0
         self.player_x = 200
@@ -97,6 +104,7 @@ class Player:
         self.aura_blade_motion = [load_image("resource\\auraBlade" +str(i) +".png") for i in range(5)]
         self.brandish_motion = [load_image("resource\\brandish" + str(i)+".png") for i in range(7)]
 
+        self.font =load_font(font, 16)
         self.event=None
         self.direction = 'r'
         self.frame = 0
@@ -113,6 +121,8 @@ class Player:
 
     def draw(self):
         self.state_machine.draw()
+        self.font.draw(self.player_x - 50, self.player_y + 50, "mp: " + str(self.mp), (255, 255, 255))
+        self.font.draw(self.player_x - 50, self.player_y + 70, "hp: " + str(self.hp), (255, 255, 255))
         if debug_flag:
             draw_rectangle(*self.get_bb())
     def update(self):
@@ -124,6 +134,10 @@ class Player:
         self.state_machine.update()
         if self.player_jump:
             self.update_jump(self.ground)
+        if self.mp < self.max_mp:
+            self.mp += self.mpup * 3 * game_framework.frame_time
+        elif self.mp > self.max_mp:
+            self.mp=self.max_mp
     def handle_event(self, event):
         if event.type == SDL_KEYDOWN and event.key == SDLK_LALT and not self.player_jump:
             self.player_jump=True
@@ -157,25 +171,33 @@ class Player:
                 self.ground=self.temp_xy[3]+30
             else:
                 self.ground=106+up
-
+        if group=="player:mano":
+            if get_time() - self.non_hit_time_now > self.non_hit_time:
+                self.hp-=150
+                self.non_hit_time_now=get_time()
 
 class Skill:
     @staticmethod
     def enter(player, e):
         player.frame=0
+
         player.start_time = get_time()
-        if e[1].key==SDLK_q:
+        if e[1].key==SDLK_q and player.mp >= 50:
             player.skill_motion = 1
-
-
             skill=Aura_blade(player.player_x, player.player_y, player.direction)
             game_world.add_object(skill, 3)
             aura =Aura(player.player_x, player.player_y, player.direction)
             game_world.add_object(aura, 3)
-            game_world.add_collision_pair("skill:mob", aura, None)
+            game_world.add_collision_pair("skill:mob", None, aura)
+            player.mp-=skill.mp
 
         elif e[1].key==SDLK_w:
             player.skill_motion = 2
+            skill=Brandish(player.player_x, player.player_y, player.direction)
+            game_world.add_object(skill, 3)
+            game_world.add_collision_pair("skill:mob", None, skill)
+        else:
+            player.state_machine.add_event(('TIME_OUT', 0))
     def exit(self):
         pass
     @staticmethod

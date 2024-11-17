@@ -88,7 +88,7 @@ class mano:
         self.y=115+up
         self.delay=0
         self.run_speed = ((5 * 1000) / 3600) * 10 / 0.3
-        self.hp=300
+        self.hp=3000
         self.idle_motion =[load_image("resource\\mano_idle"+str(i)+".png") for i in range(8)]
         self.move_motion = [load_image("resource\\mano_move" + str(i) + ".png") for i in range(6)]
         self.skill_motion=[load_image("resource\\mano_skill"+str(i)+".png") for i in range(10)]
@@ -126,6 +126,11 @@ class mano:
             draw_rectangle(*self.get_bb())
     def handle_collision(self, group, other):
         if group =="skill:mob":
-            if other.type == 1:
-                self.hp = ((self.hp * 10) - other.damage)/10
-                return
+            if not other.is_hit:
+                self.hp -= other.damage
+            return
+
+
+class mano_atatck:
+    def __init__(self):
+        pass

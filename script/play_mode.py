@@ -51,7 +51,7 @@ def init():
     for platform in platforms:
         game_world.add_collision_pair("player:platform", None, platform)
     game_world.add_collision_pair("player:mano", player, mano)
-    game_world.add_collision_pair("skill:mob", None, mano)
+    game_world.add_collision_pair("skill:mob", mano, None)
 
 def draw():
     clear_canvas()
