@@ -23,6 +23,7 @@ class Aura_blade:
         self.y=y
         self.type=0
         self.mp=50
+        self.shoot=False
         if direction == 'r':
             self.direction = 1
         else:
