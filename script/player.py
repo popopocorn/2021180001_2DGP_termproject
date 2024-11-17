@@ -8,7 +8,7 @@ from skill import *
 
 TIME_PER_ACTION = [0.5, 1.0, 0.68, 0.5]
 ACTION_PER_TIME = [1.0/i for i in TIME_PER_ACTION]
-FRAMES_PER_ACTION = [4, 3, 5, 7] # walk, idle
+FRAMES_PER_ACTION = [4, 3, 5, 7] # walk, idle, aura, brandish
 
 aura_blade_y = [0, 0, -12, 15, 15]
 aura_blade_x = [0, -30, -30, -0, 0]
@@ -97,6 +97,7 @@ class Player:
         self.aura_blade_motion = [load_image("resource\\auraBlade" +str(i) +".png") for i in range(5)]
         self.brandish_motion = [load_image("resource\\brandish" + str(i)+".png") for i in range(7)]
 
+        self.event=None
         self.direction = 'r'
         self.frame = 0
         self.state_machine=StateMachine(self)
@@ -106,7 +107,7 @@ class Player:
                 Walk: {right_down: Idle, left_down: Idle, right_up: Idle, left_up: Idle, skill_down: Skill},
                 Idle: {right_down: Walk, left_down: Walk, left_up: Walk, right_up: Walk, skill_down: Skill},
                 Skill: {time_out: Wait},
-                Wait: {right_down: Walk, left_down: Walk},
+                Wait: {right_down: Walk, left_down: Walk, skill_down: Skill},
             }
         )
 
@@ -115,7 +116,8 @@ class Player:
         if debug_flag:
             draw_rectangle(*self.get_bb())
     def update(self):
-        if(self.player_x +10 <self.temp_xy[0] or self.player_x -20 > self.temp_xy[2]):
+        if(self.player_x +10 <self.temp_xy[0] or self.player_x -20 > self.temp_xy[2]) or\
+            self.event.type == SDL_KEYDOWN and self.event.key == SDLK_DOWN :
             self.ground=106+up
         if self.player_y>self.ground:
             self.player_jump=True
@@ -127,6 +129,7 @@ class Player:
             self.player_jump=True
             self.player_dy=25
         self.state_machine.add_event(('INPUT', event))
+        self.event=event
     def get_player_location(self):
         return self.player_x
 
@@ -163,8 +166,14 @@ class Skill:
         player.start_time = get_time()
         if e[1].key==SDLK_q:
             player.skill_motion = 1
-            skill=Aura_blade(player.player_x, player.player_y)
-            game_world.add_skill(skill)
+
+
+            skill=Aura_blade(player.player_x, player.player_y, player.direction)
+            game_world.add_object(skill, 3)
+            aura =Aura(player.player_x, player.player_y, player.direction)
+            game_world.add_object(aura, 3)
+            game_world.add_collision_pair("skill:mob", aura, None)
+
         elif e[1].key==SDLK_w:
             player.skill_motion = 2
     def exit(self):
@@ -212,12 +221,12 @@ class Wait:
     def draw(player):
         if not player.player_jump:
             if player.direction == 'r':
-                player.idle_motion[int(player.frame)].composite_draw(0, 'h', player.player_x, player.player_y)
+                player.idle_motion[int(player.frame)].composite_draw(0, 'h', player.player_x + 10, player.player_y)
             else:
                 player.idle_motion[int(player.frame)].draw(player.player_x - 20, player.player_y)
         else:
             if player.direction == 'r':
-                player.jump_motion.composite_draw(0, 'h', player.player_x - 25, player.player_y + 5)
+                player.jump_motion.composite_draw(0, 'h', player.player_x - 15, player.player_y + 5)
             else:
                 player.jump_motion.draw(player.player_x + 15, player.player_y + 5)
 

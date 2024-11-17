@@ -4,6 +4,7 @@ import game_framework
 from script.state_machine import time_out
 from config import *
 
+
 TIME_PER_ACTION = [1.0, 1.0, 1.0]
 ACTION_PER_TIME = [1.0/i for i in TIME_PER_ACTION]
 FRAMES_PER_ACTION = [8, 6 ,10] # idle, walk, skill
@@ -82,6 +83,7 @@ class Attack():
 
 class mano:
     def __init__(self):
+        self.font=load_font(font, 30)
         self.x=600
         self.y=115+up
         self.delay=0
@@ -104,6 +106,7 @@ class mano:
         )
     def update(self):
         self.state_machine.update()
+
     def handle_events(self, player_location):
         if player_location < self.x:
             self.direction='r'
@@ -117,6 +120,12 @@ class mano:
     def get_bb(self):
         return self.x -70, self.y - 50, self.x+60, self.y+55
     def draw(self):
+        self.font.draw(self.x - 50, self.y+120, str(self.hp), (255, 255, 255))
         self.state_machine.draw()
         if debug_flag:
             draw_rectangle(*self.get_bb())
+    def handle_collision(self, group, other):
+        if group =="skill:mob":
+            if other.type == 1:
+                self.hp = ((self.hp * 10) - other.damage)/10
+                return

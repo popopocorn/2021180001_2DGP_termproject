@@ -48,6 +48,8 @@ def init():
     game_world.add_collision_pair("player:platform", player, None)
     for platform in platforms:
         game_world.add_collision_pair("player:platform", None, platform)
+    game_world.add_collision_pair("player:mob", player, mushmom)
+    game_world.add_collision_pair("skill:mob", None, mushmom)
 
 
 def draw():

@@ -10,6 +10,7 @@ def space_down(e): #e가 space down인지 판단
 def time_out(e):
     return e[0] =='TIME_OUT'
 
+
 def right_down(e):
     return e[0] =='INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_RIGHT
 def right_up(e):
@@ -19,11 +20,12 @@ def left_down(e):
 def left_up(e):
     return e[0] =='INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_LEFT
 def skill_down(e):
-    if e[0]=='INPUT' and e[1].type == SDL_KEYDOWN and\
-    e[1].key==SDLK_q or e[1].key==SDLK_w or e[1].key==SDLK_e or e[1].key==SDLK_r:
-        return True
-    else:
-        return False
+    if e[1]!=int:
+        if e[0]=='INPUT' and e[1].type == SDL_KEYDOWN and\
+        e[1].key==SDLK_q or e[1].key==SDLK_w or e[1].key==SDLK_e or e[1].key==SDLK_r:
+            return True
+        else:
+            return False
 
 
 

@@ -121,3 +121,8 @@ class Mushmom:
         if debug_flag:
             draw_rectangle(*self.get_bb())
 
+    def handle_collision(self, group, other):
+        if group =="skill:mob":
+            if other.type == 1:
+                print("na")
+                return
