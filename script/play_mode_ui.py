@@ -2,6 +2,7 @@
 from pico2d import *
 import random
 
+from main_ui import Player_status
 from background import *
 from player import Player
 from mushmom import Mushmom
@@ -13,7 +14,7 @@ import game_framework
 
 def handle_events():
 
-    global player_jump, mushmom_event_time
+    global player_jump
     player_jump = player.get_jump()
     events = get_events()
     curr_time=get_time()
@@ -28,15 +29,11 @@ def handle_events():
         else:
             if event.type in(SDL_KEYDOWN, SDL_KEYUP):
                 player.handle_event(event) #boy에게 event 전달
-    if curr_time - mushmom_event_time >= 2.0:
-        mushmom.handle_events(player.get_player_location())
-        mushmom_event_time = get_time()
 
 def init():
-    global player, mushmom, mushmom_event_time
-    mushmom_event_time = 0
-    mushmom = Mushmom()
-    game_world.add_object(mushmom, 1)
+    global player
+    ui=Player_status()
+    game_world.add_object(ui, 4)
     player = Player()
     game_world.add_object(player, 2)
     background = Background1()
@@ -48,8 +45,7 @@ def init():
     game_world.add_collision_pair("player:platform", player, None)
     for platform in platforms:
         game_world.add_collision_pair("player:platform", None, platform)
-    game_world.add_collision_pair("player:mob", player, mushmom)
-    game_world.add_collision_pair("skill:mob", mushmom, None)
+
 
 
 def draw():

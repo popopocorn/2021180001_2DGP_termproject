@@ -87,7 +87,7 @@ class Attack():
             mob.skill_motion[int(mob.frame)].draw(mob.x, mob.y + 31 + Action_y[int(mob.frame)], 150, 150)
 
 
-class Mushmom:
+class Timer:
     def __init__(self):
         self.font = load_font(font, 30)
 

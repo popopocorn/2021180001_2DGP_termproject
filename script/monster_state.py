@@ -1,6 +1,9 @@
 def start_event(e):
     return e[0]=='START'
 
+def die(e):
+    return e[0]=='DIE'
+
 def time_out(e):
     return e[0] =='TIME_OUT'
 def Done(e):

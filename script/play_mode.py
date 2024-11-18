@@ -1,4 +1,3 @@
-from django.utils.termcolors import background
 from pico2d import *
 import random
 
@@ -26,7 +25,8 @@ def handle_events():
         elif event.type == SDL_KEYDOWN and event.key == SDLK_i:
             pass
         elif event.type == SDL_KEYDOWN and event.key == SDLK_SPACE:
-            game_framework.change_mode(play_mode_2)
+            #game_framework.change_mode(play_mode_2)
+            pass
         else:
             if event.type in(SDL_KEYDOWN, SDL_KEYUP):
                 player.handle_event(event) #boy에게 event 전달
@@ -43,14 +43,14 @@ def init():
     game_world.add_object(player, 2)
     background = Background1()
     game_world.add_object(background, 0)
-    platforms = [Platform(), Platform(900, 170),  Platform(750, 170),  Platform(600, 170),
-                 Platform(450, 170), Platform(300, 170), Platform(150, 120)]
+    platforms = [Platform( 1020,120 ), Platform(870, 170),  Platform(720, 170),  Platform(570, 170),
+                 Platform(420, 170), Platform(270, 170), Platform(120, 120)]
     for platform in platforms:
         game_world.add_object(platform, 0)
     game_world.add_collision_pair("player:platform", player, None)
     for platform in platforms:
         game_world.add_collision_pair("player:platform", None, platform)
-    game_world.add_collision_pair("player:mano", player, mano)
+    game_world.add_collision_pair("player:mob", player, mano)
     game_world.add_collision_pair("skill:mob", mano, None)
 
 def draw():

@@ -33,11 +33,19 @@ class Walk:
         pass
     @staticmethod
     def do(player):
-        player.player_x += player.player_dx * player.run_speed * game_framework.frame_time
+        if player.player_heart:
+            player.walk_motion[int(player.frame)].opacify(10000 * game_framework.frame_time % 2)
+            player.jump_motion.opacify(10000 * game_framework.frame_time % 2)
+        else:
+            player.walk_motion[int(player.frame)].opacify(1)
+            player.jump_motion.opacify(1)
+        if (player.direction == 'r' and player.player_x < width - 20) or (player.direction == 'l' and player.player_x > 20):
+            player.player_x += player.player_dx * player.run_speed * game_framework.frame_time
         player.frame = (player.frame + FRAMES_PER_ACTION[0]*ACTION_PER_TIME[0] * game_framework.frame_time)%FRAMES_PER_ACTION[0]
 
     @staticmethod
     def draw(player):
+
         if player.direction == 'r':
             if not player.player_jump:
                 player.walk_motion[int(player.frame)].composite_draw(0, 'h', player.player_x + 10, player.player_y)
@@ -60,6 +68,12 @@ class Idle:
 
     @staticmethod
     def do(player):
+        if player.player_heart:
+            player.idle_motion[int(player.frame)].opacify(10000 * game_framework.frame_time % 2)
+            player.jump_motion.opacify(10000 * game_framework.frame_time % 2)
+        else:
+            player.idle_motion[int(player.frame)].opacify(1)
+            player.jump_motion.opacify(1)
         player.frame = (player.frame + FRAMES_PER_ACTION[1]*ACTION_PER_TIME[1] * game_framework.frame_time)%FRAMES_PER_ACTION[1]
 
     @staticmethod
@@ -82,6 +96,7 @@ class Player:
         self.hp=1000
         self.max_mp=250
         self.mp = self.max_mp
+        self.ad=10000
         self.mpup = 1
         self.jump_speed = ((5 * 1000) / 3600) * 10 / 0.3
         self.non_hit_time_now = get_time()
@@ -89,6 +104,8 @@ class Player:
 
         self.gravity = 3
         self.player_jump = False
+        self.player_heart = False
+        self.heart_time = get_time()
 
         self.player_dx = 0
         self.player_dy = 0
@@ -121,11 +138,13 @@ class Player:
 
     def draw(self):
         self.state_machine.draw()
-        self.font.draw(self.player_x - 50, self.player_y + 50, "mp: " + str(self.mp), (255, 255, 255))
-        self.font.draw(self.player_x - 50, self.player_y + 70, "hp: " + str(self.hp), (255, 255, 255))
+        self.font.draw(self.player_x - 50, self.player_y + 50, "mp: " + str(int(self.mp)), (255, 255, 255))
+        self.font.draw(self.player_x - 50, self.player_y + 70, "hp: " + str(int(self.hp)), (255, 255, 255))
         if debug_flag:
             draw_rectangle(*self.get_bb())
     def update(self):
+        if self.hp<=0:
+            game_framework.quit()
         if(self.player_x +10 <self.temp_xy[0] or self.player_x -20 > self.temp_xy[2]) or\
             self.event.type == SDL_KEYDOWN and self.event.key == SDLK_DOWN :
             self.ground=106+up
@@ -138,6 +157,9 @@ class Player:
             self.mp += self.mpup * 3 * game_framework.frame_time
         elif self.mp > self.max_mp:
             self.mp=self.max_mp
+        if get_time()-self.heart_time> self.non_hit_time:
+            self.player_heart=False
+
     def handle_event(self, event):
         if event.type == SDL_KEYDOWN and event.key == SDLK_LALT and not self.player_jump:
             self.player_jump=True
@@ -171,10 +193,21 @@ class Player:
                 self.ground=self.temp_xy[3]+30
             else:
                 self.ground=106+up
-        if group=="player:mano":
+        if group=="player:mob":
             if get_time() - self.non_hit_time_now > self.non_hit_time:
-                self.hp-=150
-                self.non_hit_time_now=get_time()
+                if other.is_mush:
+                    if self.player_jump:
+                        pass
+                    else:
+                        self.hp -= other.damage
+                        self.non_hit_time_now = get_time()
+                        self.player_heart=True
+                        self.heart_time=get_time()
+                else:
+                    self.hp-=other.damage
+                    self.non_hit_time_now=get_time()
+                    self.player_heart = True
+                    self.heart_time = get_time()
 
 class Skill:
     @staticmethod
@@ -184,16 +217,13 @@ class Skill:
         player.start_time = get_time()
         if e[1].key==SDLK_q and player.mp >= 50:
             player.skill_motion = 1
-            skill=Aura_blade(player.player_x, player.player_y, player.direction)
+            skill=Aura_blade(player.player_x, player.player_y, player.direction, player.ad)
             game_world.add_object(skill, 3)
-            aura =Aura(player.player_x, player.player_y, player.direction)
-            game_world.add_object(aura, 3)
-            game_world.add_collision_pair("skill:mob", None, aura)
             player.mp-=skill.mp
 
         elif e[1].key==SDLK_w:
             player.skill_motion = 2
-            skill=Brandish(player.player_x, player.player_y, player.direction)
+            skill=Brandish(player.player_x, player.player_y, player.direction, player.ad)
             game_world.add_object(skill, 3)
             game_world.add_collision_pair("skill:mob", None, skill)
         else:
@@ -236,6 +266,12 @@ class Wait:
 
     @staticmethod
     def do(player):
+        if player.player_heart:
+            player.idle_motion[int(player.frame)].opacify(10000 * game_framework.frame_time % 2)
+            player.jump_motion.opacify(10000 * game_framework.frame_time % 2)
+        else:
+            player.idle_motion[int(player.frame)].opacify(1)
+            player.jump_motion.opacify(1)
         player.frame = (player.frame + FRAMES_PER_ACTION[1] * ACTION_PER_TIME[1] * game_framework.frame_time) % \
                        FRAMES_PER_ACTION[1]
 

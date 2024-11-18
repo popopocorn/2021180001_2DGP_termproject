@@ -1,6 +1,6 @@
 from pico2d import *
 import game_framework
-import play_mode as next
+import title_mode as next
 
 TIME_PER_ACTION = 2
 ACTION_PER_TIME = 1.0/TIME_PER_ACTION

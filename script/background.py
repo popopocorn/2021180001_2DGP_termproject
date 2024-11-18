@@ -30,10 +30,12 @@ class Background1:
         self.floor.draw(720, up)
         self.floor.draw(1080, up)
         self.floor.draw(1440, up)
+        if debug_flag:
+            draw_rectangle(*self.get_bb())
     def update(self):
         pass
     def get_bb(self):
-        pass
+        return 0, 0, width, up+76
 if __name__ == '__main__':
     open_canvas(1600, 900)
     bg=Background1()

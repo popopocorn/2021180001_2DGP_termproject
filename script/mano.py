@@ -3,11 +3,14 @@ from monster_state import *
 import game_framework
 from script.state_machine import time_out
 from config import *
+import game_world
+import play_mode_2 as next_mod
 
-
-TIME_PER_ACTION = [1.0, 1.0, 1.0]
+TIME_PER_ACTION = [1.0, 1.0, 1.0, 1.5]
 ACTION_PER_TIME = [1.0/i for i in TIME_PER_ACTION]
-FRAMES_PER_ACTION = [8, 6 ,10] # idle, walk, skill
+FRAMES_PER_ACTION = [8, 6 ,10, 9] # idle, walk, skill
+
+mano_motion_y = [0, 0, 0, 1.5, 1.5, 27, 27, 34.5, 39, 37.5]
 
 class Idle:
     @staticmethod
@@ -62,6 +65,7 @@ class Attack():
     def enter(mano, e):
         mano.frame=0
         mano.start_time = get_time()
+        mano.attack=False
     @staticmethod
     def exit(mano, e):
         mano.start_time=0
@@ -70,28 +74,40 @@ class Attack():
     def do(mano):
         mano.frame = (mano.frame + FRAMES_PER_ACTION[2] * ACTION_PER_TIME[2] * game_framework.frame_time) % \
                      FRAMES_PER_ACTION[2]
+        if mano.frame >5 and not mano.attack:
+            mano_skill=mano_atatck(mano.x, mano.y)
+            game_world.add_object(mano_skill, 3)
+            game_world.add_collision_pair("player:mob", None, mano_skill)
+            mano.attack=True
         if mano.frame >= FRAMES_PER_ACTION[2] -1 :
             mano.state_machine.add_event(("DONE", (0, 0)))
 
     @staticmethod
     def draw(mano):
         if mano.direction == 'l':
-            mano.skill_motion[int(mano.frame)].composite_draw(0, 'h', mano.x, mano.y + 31, 150, 150)
+            mano.skill_motion[int(mano.frame)].composite_draw(0, 'h', mano.x, mano.y + 31 + mano_motion_y[int(mano.frame)], mano.skill_motion[int(mano.frame)].w *1.5, mano.skill_motion[int(mano.frame)].h *1.5)
         else:
-            mano.skill_motion[int(mano.frame)].draw(mano.x, mano.y + 31, 150, 150)
+            mano.skill_motion[int(mano.frame)].draw(mano.x, mano.y + 31+ mano_motion_y[int(mano.frame)], mano.skill_motion[int(mano.frame)].w *1.5, mano.skill_motion[int(mano.frame)].h *1.5)
 
 
 class mano:
     def __init__(self):
         self.font=load_font(font, 30)
+
         self.x=600
         self.y=115+up
-        self.delay=0
         self.run_speed = ((5 * 1000) / 3600) * 10 / 0.3
-        self.hp=3000
+        self.hp = 2000
+        self.damage=150
+
+        self.is_mush = False
+        self.attack=False
+        self.delay=0
+
         self.idle_motion =[load_image("resource\\mano_idle"+str(i)+".png") for i in range(8)]
         self.move_motion = [load_image("resource\\mano_move" + str(i) + ".png") for i in range(6)]
         self.skill_motion=[load_image("resource\\mano_skill"+str(i)+".png") for i in range(10)]
+        self.die_motion = [load_image("resource\\mano_die (" + str(i + 1) + ").png") for i in range(9)]
         self.direction = 'r'
         self.dx=0
         self.frame = 0
@@ -99,13 +115,16 @@ class mano:
         self.state_machine.start(Idle)
         self.state_machine.set_transitions(
             {
-                Trace:{can_attack: Attack},
+                Trace:{can_attack: Attack, die: Die},
                 Attack:{Done: Trace},
-                Idle:{time_out: Trace},
+                Idle:{time_out: Trace, die: Die},
+                Die:{time_out: Die},
             }
         )
     def update(self):
         self.state_machine.update()
+        if self.hp <= 0:
+            self.state_machine.add_event(('DIE', (0, 0)))
 
     def handle_events(self, player_location):
         if player_location < self.x:
@@ -128,9 +147,51 @@ class mano:
         if group =="skill:mob":
             if not other.is_hit:
                 self.hp -= other.damage
-            return
+
 
 
 class mano_atatck:
-    def __init__(self):
-        pass
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.is_hit = False
+        self.start_time=get_time()
+        self.damage = 170
+        self.is_mush = False
+    def draw(self):
+        if debug_flag:
+            draw_rectangle(*self.get_bb())
+
+    def update(self):
+        if get_time() - self.start_time>0.1:
+            game_world.remove_object(self)
+    def get_bb(self):
+        # fill here
+        return self.x -150, self.y -150, self.x +150, self.y+100
+
+    def handle_collision(self, group, other):
+        if group == "player.mob":
+            self.is_hit = True
+
+
+class Die:
+    @staticmethod
+    def enter(mano, e):
+        mano.start_time = get_time()
+        mano.frame=0
+    @staticmethod
+    def exit(mano, e):
+        game_world.remove_object(mano)
+        game_framework.change_mode(next_mod)
+    @staticmethod
+    def do(mano):
+        mano.frame = (mano.frame + FRAMES_PER_ACTION[3]*ACTION_PER_TIME[3] * game_framework.frame_time)%FRAMES_PER_ACTION[3]
+        if mano.frame >= FRAMES_PER_ACTION[3] -1 :
+            mano.state_machine.add_event(("TIME_OUT", (0, 0)))
+
+    @staticmethod
+    def draw(mano):
+        if mano.direction == 'r':
+            mano.die_motion[int(mano.frame)].draw(mano.x, mano.y + 31, 150, 150)
+        else:
+            mano.die_motion[int(mano.frame)].composite_draw(0, 'h', mano.x, mano.y + 31, 150, 150)
