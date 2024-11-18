@@ -4,12 +4,16 @@ import play_mode as next
 from config import *
 
 def init():
-    global image
+    global image, notice, title
     image = load_image("resource\\back1.png")
+    notice = load_font(font, 30)
+    title = load_font(font, 60)
 
 def finish():
-    global image
+    global image, notice, title
     del image
+    del notice
+    del title
 
 def handle_events():
     events = get_events()
@@ -30,6 +34,8 @@ def update():
 def draw():
     clear_canvas()
     image.draw(width/2, height/2)
+    title.draw(width / 2 - 125, height / 2, "히어로그", (255, 255, 255))
+    notice.draw(width/2-175, height/2 - 150, "Press Any Key To Start", (255, 255, 255))
     update_canvas()
 
 

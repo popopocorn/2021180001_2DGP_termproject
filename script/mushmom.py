@@ -5,10 +5,11 @@ from script.state_machine import time_out
 from config import *
 import game_world
 
-TIME_PER_ACTION = [1.0, 1.0, 1.5]
+TIME_PER_ACTION = [1.0, 1.0, 1.5, 1.5]
 ACTION_PER_TIME = [1.0/i for i in TIME_PER_ACTION]
-FRAMES_PER_ACTION = [4, 5 ,10] # idle, walk, skill
+FRAMES_PER_ACTION = [4, 5 ,10, 6] # idle, walk, skill
 Action_y = [0, 0, 0, 20, 30, 30, 20, 0, 0]
+Die_y=[0, -50, -50, -50, -50, -50]
 class Idle:
     @staticmethod
     def enter(mob, e):
@@ -105,6 +106,7 @@ class Mushmom:
         self.idle_motion =[load_image("resource\\mushmom_idle ("+str(i+1)+").png") for i in range(FRAMES_PER_ACTION[0])]
         self.move_motion = [load_image("resource\\mushmom_move (" + str(i+1) + ").png") for i in range(FRAMES_PER_ACTION[1])]
         self.skill_motion=[load_image("resource\\mushmom_attack ("+str(i+1)+").png") for i in range(FRAMES_PER_ACTION[2])]
+        self.die_motion=[load_image("resource\\mushmom_die ("+str(i)+").png") for i in range(FRAMES_PER_ACTION[3])]
         self.direction = 'r'
         self.dx=0
         self.frame = 0
@@ -112,13 +114,16 @@ class Mushmom:
         self.state_machine.start(Idle)
         self.state_machine.set_transitions(
             {
-                Trace:{can_attack: Attack},
+                Trace:{can_attack: Attack, die: Die},
                 Attack:{Done: Trace},
-                Idle:{time_out: Trace},
+                Idle:{time_out: Trace, die: Die},
+                Die:{time_out: Die},
             }
         )
     def update(self):
         self.state_machine.update()
+        if self.hp <= 0:
+            self.state_machine.add_event(('DIE', (0, 0)))
     def handle_events(self, player_location):
         if player_location < self.x:
             self.direction='r'
@@ -165,4 +170,27 @@ class mob_atatck:
     def handle_collision(self, group, other):
         if group == "player.mob":
             self.is_hit = True
+
+class Die:
+    @staticmethod
+    def enter(mob, e):
+        mob.start_time = get_time()
+        mob.frame=0
+    @staticmethod
+    def exit(mob, e):
+        game_world.remove_object(mob)
+        #game_framework.change_mode(next_mod)
+        game_framework.quit()
+    @staticmethod
+    def do(mob):
+        mob.frame = (mob.frame + FRAMES_PER_ACTION[3]*ACTION_PER_TIME[3] * game_framework.frame_time)%FRAMES_PER_ACTION[3]
+        if mob.frame >= FRAMES_PER_ACTION[3] -1 :
+            mob.state_machine.add_event(("TIME_OUT", (0, 0)))
+
+    @staticmethod
+    def draw(mob):
+        if mob.direction == 'r':
+            mob.die_motion[int(mob.frame)].draw(mob.x, mob.y + 31 + Die_y[int(mob.frame)])
+        else:
+            mob.die_motion[int(mob.frame)].composite_draw(0, 'h', mob.x, mob.y + 31+ Die_y[int(mob.frame)])
 
