@@ -96,7 +96,7 @@ class Player:
         self.hp=1000
         self.max_mp=250
         self.mp = self.max_mp
-        self.ad=100
+        self.ad=10000
         self.mpup = 1
         self.jump_speed = ((5 * 1000) / 3600) * 10 / 0.3
         self.non_hit_time_now = get_time()
