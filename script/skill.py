@@ -89,7 +89,7 @@ class Aura:
 
 class Brandish:
     def __init__(self, x, y, direction, ad):
-        self.frame = 0
+        self.frame = 1
         self.x = x
         self.y = y
         self.type = 2

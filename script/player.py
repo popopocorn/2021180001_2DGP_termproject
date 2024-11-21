@@ -189,8 +189,8 @@ class Player:
     def handle_collision(self, group, other):
         self.temp_xy = other.get_bb()
         if group=="player:platform":
-            if self.player_y>=self.temp_xy[3] + 30:
-                self.ground=self.temp_xy[3]+30
+            if self.player_y>=self.temp_xy[3]:
+                self.ground=self.temp_xy[3]
             else:
                 self.ground=106+up
         if group=="player:mob":
