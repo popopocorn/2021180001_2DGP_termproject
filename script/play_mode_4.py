@@ -35,8 +35,8 @@ def init():
     game_world.add_object(player, 2)
     background = CaveGround()
     game_world.add_object(background, 0)
-    platforms = [CavePlatform(1020, 120), CavePlatform(870, 170), CavePlatform(720, 170), CavePlatform(570, 170),
-                 CavePlatform(420, 170), CavePlatform(270, 170), CavePlatform(120, 120)]
+    platforms = [BlockPlatform(1020, 120), BlockPlatform(870, 170), BlockPlatform(720, 170), BlockPlatform(570, 170),
+                 BlockPlatform(420, 170), BlockPlatform(270, 170), BlockPlatform(120, 120)]
     for platform in platforms:
         game_world.add_object(platform, 0)
     game_world.add_collision_pair("player:platform", player, None)
