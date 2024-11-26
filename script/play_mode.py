@@ -7,7 +7,7 @@ from mano import mano
 import game_world
 import game_framework
 import play_mode_2
-
+import config
 # Game object class here
 
 
@@ -26,6 +26,7 @@ def handle_events():
             pass
         elif event.type == SDL_KEYDOWN and event.key == SDLK_SPACE:
             #game_framework.change_mode(play_mode_2)
+            config.debug_flag = not config.debug_flag
             pass
         else:
             if event.type in(SDL_KEYDOWN, SDL_KEYUP):
