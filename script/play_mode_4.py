@@ -4,7 +4,7 @@ import random
 
 from background import *
 from player import Player
-from mushmom import Mushmom
+from junior_barlog import JuniorBarlog
 import game_world
 import game_framework
 
@@ -30,8 +30,9 @@ def handle_events():
                 player.handle_event(event) #boy에게 event 전달
 
 def init():
-    global player
+    global player, barlog
     player = Player()
+    barlog = JuniorBarlog()
     game_world.add_object(player, 2)
     background = CaveGround()
     game_world.add_object(background, 0)
