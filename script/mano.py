@@ -2,7 +2,7 @@ from pico2d import *
 from monster_state import *
 import game_framework
 from script.state_machine import time_out
-from config import *
+import config
 import game_world
 import play_mode_2 as next_mod
 
@@ -92,10 +92,10 @@ class Attack():
 
 class mano:
     def __init__(self):
-        self.font=load_font(font, 30)
+        self.font=load_font(config.font, 30)
 
         self.x=600
-        self.y=115+up
+        self.y=115+config.up
         self.run_speed = ((5 * 1000) / 3600) * 10 / 0.3
         self.hp = 2000
         self.damage=150
@@ -141,7 +141,7 @@ class mano:
     def draw(self):
         self.font.draw(self.x - 50, self.y+120, str(self.hp), (255, 255, 255))
         self.state_machine.draw()
-        if debug_flag:
+        if config.debug_flag:
             draw_rectangle(*self.get_bb())
     def handle_collision(self, group, other):
         if group =="skill:mob":
@@ -159,7 +159,7 @@ class mano_atatck:
         self.damage = 170
         self.is_mush = False
     def draw(self):
-        if debug_flag:
+        if config.debug_flag:
             draw_rectangle(*self.get_bb())
 
     def update(self):

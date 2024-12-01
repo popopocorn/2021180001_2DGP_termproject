@@ -2,7 +2,7 @@ from pico2d import *
 import game_framework
 import game_world
 from random import randint
-from config import *
+import config
 
 TIME_PER_ACTION = [0.68, 0.5, 0.78]
 ACTION_PER_TIME = [1.0/i for i in TIME_PER_ACTION]
@@ -66,7 +66,7 @@ class Aura:
         else:
             self.image[int(self.frame)].composite_draw(0, 'h', self.x + 50, self.y, 480*0.6, 350*0.6)
 
-        if debug_flag:
+        if config.debug_flag:
             draw_rectangle(*self.get_bb())
 
     def update(self):
@@ -108,7 +108,7 @@ class Brandish:
         else:
             self.image[int(self.frame)].composite_draw(0, 'h', self.x , self.y + brandish_y[int(self.frame)] + 30, 480 * 0.6, 350 * 0.6)
 
-        if debug_flag:
+        if config.debug_flag:
             draw_rectangle(*self.get_bb())
 
     def update(self):

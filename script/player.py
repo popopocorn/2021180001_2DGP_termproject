@@ -3,7 +3,7 @@ from time import *
 from state_machine import *
 import game_world
 import game_framework
-from config import *
+import config
 from skill import *
 
 TIME_PER_ACTION = [0.5, 1.0, 0.68, 0.5]
@@ -39,7 +39,7 @@ class Walk:
         else:
             player.walk_motion[int(player.frame)].opacify(1)
             player.jump_motion.opacify(1)
-        if (player.direction == 'r' and player.player_x < width - 20) or (player.direction == 'l' and player.player_x > 20):
+        if (player.direction == 'r' and player.player_x < config.width - 20) or (player.direction == 'l' and player.player_x > 20):
             player.player_x += player.player_dx * player.run_speed * game_framework.frame_time
         player.frame = (player.frame + FRAMES_PER_ACTION[0]*ACTION_PER_TIME[0] * game_framework.frame_time)%FRAMES_PER_ACTION[0]
 
@@ -96,7 +96,7 @@ class Player:
         self.hp=1000
         self.max_mp=250
         self.mp = self.max_mp
-        self.ad=100
+        self.ad=10000
         self.mpup = 1
         self.jump_speed = ((5 * 1000) / 3600) * 10 / 0.3
         self.non_hit_time_now = get_time()
@@ -110,8 +110,8 @@ class Player:
         self.player_dx = 0
         self.player_dy = 0
         self.player_x = 200
-        self.player_y = 106+up
-        self.ground=106+up
+        self.player_y = 106+config.up
+        self.ground=106+config.up
         self.temp_xy=[0, 0, 0, 0]
         self.walk_motion = [load_image("resource\\walk" + str(x) + ".png") for x in range(4)]
         self.idle_motion = [load_image("resource\\idle" + str(x) + ".png") for x in range(3)]
@@ -121,7 +121,7 @@ class Player:
         self.aura_blade_motion = [load_image("resource\\auraBlade" +str(i) +".png") for i in range(5)]
         self.brandish_motion = [load_image("resource\\brandish" + str(i)+".png") for i in range(7)]
 
-        self.font =load_font(font, 16)
+        self.font =load_font(config.font, 16)
         self.event=None
         self.direction = 'r'
         self.frame = 0
@@ -140,14 +140,14 @@ class Player:
         self.state_machine.draw()
         self.font.draw(self.player_x - 50, self.player_y + 50, "mp: " + str(int(self.mp)), (255, 255, 255))
         self.font.draw(self.player_x - 50, self.player_y + 70, "hp: " + str(int(self.hp)), (255, 255, 255))
-        if debug_flag:
+        if config.debug_flag:
             draw_rectangle(*self.get_bb())
     def update(self):
         if self.hp<=0:
             game_framework.quit()
         if(self.player_x +10 <self.temp_xy[0] or self.player_x -20 > self.temp_xy[2]) or\
             self.event.type == SDL_KEYDOWN and self.event.key == SDLK_DOWN :
-            self.ground=106+up
+            self.ground=106+config.up
         if self.player_y>self.ground:
             self.player_jump=True
         self.state_machine.update()
@@ -192,7 +192,7 @@ class Player:
             if self.player_y>=self.temp_xy[3]:
                 self.ground=self.temp_xy[3]
             else:
-                self.ground=106+up
+                self.ground=106+config.up
         if group=="player:mob":
             if get_time() - self.non_hit_time_now > self.non_hit_time:
                 if other.is_mush:

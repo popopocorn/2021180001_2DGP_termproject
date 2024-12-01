@@ -25,7 +25,7 @@ def handle_events():
         elif event.type == SDL_KEYDOWN and event.key == SDLK_i:
             pass
         elif event.type == SDL_KEYDOWN and event.key == SDLK_SPACE:
-            #game_framework.change_mode(play_mode_2)
+
             config.debug_flag = not config.debug_flag
             pass
         else:

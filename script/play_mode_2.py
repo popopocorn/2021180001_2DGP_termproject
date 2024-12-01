@@ -7,6 +7,7 @@ from player import Player
 from mushmom import Mushmom
 import game_world
 import game_framework
+import config
 
 # Game object class here
 
@@ -24,7 +25,9 @@ def handle_events():
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_i:
             pass
-
+        elif event.type == SDL_KEYDOWN and event.key == SDLK_SPACE:
+            config.debug_flag = not config.debug_flag
+            pass
         else:
             if event.type in(SDL_KEYDOWN, SDL_KEYUP):
                 player.handle_event(event) #boy에게 event 전달

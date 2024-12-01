@@ -1,13 +1,13 @@
 from pico2d import *
 import game_framework
 import play_mode as next
-from config import *
+import config
 
 def init():
     global image, notice, title
     image = load_image("resource\\back1.png")
-    notice = load_font(font, 30)
-    title = load_font(font, 60)
+    notice = load_font(config.font, 30)
+    title = load_font(config.font, 60)
 
 def finish():
     global image, notice, title
@@ -33,9 +33,9 @@ def update():
 
 def draw():
     clear_canvas()
-    image.draw(width/2, height/2)
-    title.draw(width / 2 - 125, height / 2, "히어로그", (255, 255, 255))
-    notice.draw(width/2-175, height/2 - 150, "Press Any Key To Start", (255, 255, 255))
+    image.draw(config.width/2, config.height/2)
+    title.draw(config.width / 2 - 125, config.height / 2, "히어로그", (255, 255, 255))
+    notice.draw(config.width/2-175, config.height/2 - 150, "Press Any Key To Start", (255, 255, 255))
     update_canvas()
 
 
