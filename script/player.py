@@ -91,12 +91,14 @@ class Idle:
 
 
 class Player:
-    def __init__(self):
+    def __init__(self, hp=1000, mp=250, ad=100, enhance_list=[]):
         self.run_speed = ((5 * 1000) / 3600) * 10 / 0.3
-        self.hp=1000
+        self.hp=hp
         self.max_mp=250
-        self.mp = self.max_mp
-        self.ad=10000
+        self.mp = mp
+        self.ad=ad
+        self.enhance_list = enhance_list
+
         self.mpup = 1
         self.jump_speed = ((5 * 1000) / 3600) * 10 / 0.3
         self.non_hit_time_now = get_time()
