@@ -1,5 +1,5 @@
 from pico2d import *
-import play_mode_4 as start_mode
+import play_mode_3 as start_mode
 import game_framework
 
 

@@ -5,9 +5,9 @@ from script.state_machine import time_out
 from config import *
 import game_world
 
-TIME_PER_ACTION = [1.0, 1.0, 1.5]
+TIME_PER_ACTION = [1.0, 1.0, 2.0, 1.0]
 ACTION_PER_TIME = [1.0/i for i in TIME_PER_ACTION]
-FRAMES_PER_ACTION = [4, 5 ,10] # idle, walk, skill
+FRAMES_PER_ACTION = [9, 6 ,25, 8] # idle, walk, skill
 Action_y = [0, 0, 0, 20, 30, 30, 20, 0, 0]
 class Idle:
     @staticmethod
@@ -26,9 +26,9 @@ class Idle:
     @staticmethod
     def draw(mob):
         if mob.direction == 'r':
-            mob.idle_motion[int(mob.frame)].draw(mob.x, mob.y + 31, 150, 150)
+            mob.idle_motion[int(mob.frame)].draw(mob.x, mob.y + 31)
         else:
-            mob.idle_motion[int(mob.frame)].composite_draw(0, 'h', mob.x, mob.y + 31, 150, 150)
+            mob.idle_motion[int(mob.frame)].composite_draw(0, 'h', mob.x, mob.y + 31)
 
 
 class Trace():
@@ -53,9 +53,9 @@ class Trace():
     @staticmethod
     def draw(mob):
         if mob.direction == 'l':
-            mob.move_motion[int(mob.frame)].composite_draw(0, 'h', mob.x, mob.y + 31 + Action_y[int(mob.frame)], 150, 150)
+            mob.move_motion[int(mob.frame)].composite_draw(0, 'h', mob.x, mob.y + 31 + Action_y[int(mob.frame)])
         else:
-            mob.move_motion[int(mob.frame)].draw(mob.x, mob.y + 31 + Action_y[int(mob.frame)], 150, 150)
+            mob.move_motion[int(mob.frame)].draw(mob.x, mob.y + 31 + Action_y[int(mob.frame)])
 
 class Attack():
     @staticmethod
@@ -72,9 +72,9 @@ class Attack():
         mob.frame = (mob.frame + FRAMES_PER_ACTION[2] * ACTION_PER_TIME[2] * game_framework.frame_time) % \
                      FRAMES_PER_ACTION[2]
         if mob.frame > 8 and not mob.attack:
-            mob_skill=mob_atatck(mob.x, mob.y)
-            game_world.add_object(mob_skill, 3)
-            game_world.add_collision_pair("player:mob", None, mob_skill)
+            # mob_skill=mob_atatck(mob.x, mob.y)
+            # game_world.add_object(mob_skill, 3)
+            # game_world.add_collision_pair("player:mob", None, mob_skill)
             mob.attack=True
         if mob.frame >= FRAMES_PER_ACTION[2] -1 :
             mob.state_machine.add_event(("DONE", (0, 0)))
@@ -82,9 +82,9 @@ class Attack():
     @staticmethod
     def draw(mob):
         if mob.direction == 'l':
-            mob.skill_motion[int(mob.frame)].composite_draw(0, 'h', mob.x, mob.y + 31 + Action_y[int(mob.frame)], 150, 150)
+            mob.skill_motion[int(mob.frame)].composite_draw(0, 'h', mob.x, mob.y + 31)
         else:
-            mob.skill_motion[int(mob.frame)].draw(mob.x, mob.y + 31 + Action_y[int(mob.frame)], 150, 150)
+            mob.skill_motion[int(mob.frame)].draw(mob.x, mob.y + 31)
 
 
 class Timer:
@@ -102,9 +102,10 @@ class Timer:
 
         self.delay=0
 
-        self.idle_motion =[load_image("resource\\mushmom_idle ("+str(i+1)+").png") for i in range(FRAMES_PER_ACTION[0])]
-        self.move_motion = [load_image("resource\\mushmom_move (" + str(i+1) + ").png") for i in range(FRAMES_PER_ACTION[1])]
-        self.skill_motion=[load_image("resource\\mushmom_attack ("+str(i+1)+").png") for i in range(FRAMES_PER_ACTION[2])]
+        self.idle_motion =[load_image("resource\\timer_idle ("+str(i+1)+").png") for i in range(FRAMES_PER_ACTION[0])]
+        self.move_motion = [load_image("resource\\timer_move (" + str(i+1) + ").png") for i in range(FRAMES_PER_ACTION[1])]
+        self.skill_motion=[load_image("resource\\timer_attack ("+str(i+1)+").png") for i in range(FRAMES_PER_ACTION[2])]
+        self.die_motion = [load_image("resource\\timer_die (" + str(i+1) + ").png") for i in range(FRAMES_PER_ACTION[3])]
         self.direction = 'r'
         self.dx=0
         self.frame = 0
@@ -112,9 +113,10 @@ class Timer:
         self.state_machine.start(Idle)
         self.state_machine.set_transitions(
             {
-                Trace:{can_attack: Attack},
-                Attack:{Done: Trace},
-                Idle:{time_out: Trace},
+                Trace: {can_attack: Attack, die: Die},
+                Attack: {Done: Trace},
+                Idle: {time_out: Trace, die: Die},
+                Die: {time_out: Die},
             }
         )
     def update(self):
@@ -147,7 +149,7 @@ class mob_atatck:
     def __init__(self, x, y):
         self.x = x
         self.y = y
-        self.is_mush=True
+        self.is_mush= False
         self.is_hit = False
         self.start_time=get_time()
         self.damage = 350
@@ -165,4 +167,27 @@ class mob_atatck:
     def handle_collision(self, group, other):
         if group == "player.mob":
             self.is_hit = True
+
+class Die:
+    @staticmethod
+    def enter(mob, e):
+        mob.start_time = get_time()
+        mob.frame=0
+    @staticmethod
+    def exit(mob, e):
+        game_world.remove_object(mob)
+        #game_framework.change_mode(next_mod)
+        game_framework.quit()
+    @staticmethod
+    def do(mob):
+        mob.frame = (mob.frame + FRAMES_PER_ACTION[3]*ACTION_PER_TIME[3] * game_framework.frame_time)%FRAMES_PER_ACTION[3]
+        if mob.frame >= FRAMES_PER_ACTION[3] -1 :
+            mob.state_machine.add_event(("TIME_OUT", (0, 0)))
+
+    @staticmethod
+    def draw(mob):
+        if mob.direction == 'r':
+            mob.die_motion[int(mob.frame)].draw(mob.x, mob.y + 31 + Die_y[int(mob.frame)])
+        else:
+            mob.die_motion[int(mob.frame)].composite_draw(0, 'h', mob.x, mob.y + 31+ Die_y[int(mob.frame)])
 

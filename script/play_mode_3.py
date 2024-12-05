@@ -7,13 +7,13 @@ from player import Player
 from mushmom import Mushmom
 import game_world
 import game_framework
-
+from timer import Timer
 # Game object class here
 
 
 def handle_events():
 
-    global player_jump
+    global player_jump, timer_event_time
     player_jump = player.get_jump()
     events = get_events()
     curr_time=get_time()
@@ -31,11 +31,18 @@ def handle_events():
         else:
             if event.type in(SDL_KEYDOWN, SDL_KEYUP):
                 player.handle_event(event) #boy에게 event 전달
+    if curr_time - timer_event_time >= 2.0:
+        timer.handle_events(player.get_player_location())
+        timer_event_time = get_time()
 
 def init():
-    global player
+    global player, timer, timer_event_time
+    timer_event_time = 0
     player = Player()
     game_world.add_object(player, 2)
+    timer = Timer()
+    game_world.add_object(timer, 2)
+    game_world.add_collision_pair("player:mob", player, timer)
     background = CaveGround()
     game_world.add_object(background, 0)
     platforms = [CavePlatform(1020, 120), CavePlatform(870, 170), CavePlatform(720, 170), CavePlatform(570, 170),
@@ -45,7 +52,7 @@ def init():
     game_world.add_collision_pair("player:platform", player, None)
     for platform in platforms:
         game_world.add_collision_pair("player:platform", None, platform)
-
+    game_world.add_collision_pair("skill:mob", timer, None)
 
 
 def draw():

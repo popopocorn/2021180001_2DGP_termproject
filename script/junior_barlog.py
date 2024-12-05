@@ -189,7 +189,7 @@ class Die:
     @staticmethod
     def draw(mob):
         if mob.direction == 'r':
-            mob.die_motion[int(mob.frame)].draw(mob.x, mob.y + 31 + Die_y[int(mob.frame)])
+            mob.die_motion[int(mob.frame)].draw(mob.x, mob.y + 31)
         else:
-            mob.die_motion[int(mob.frame)].composite_draw(0, 'h', mob.x, mob.y + 31+ Die_y[int(mob.frame)])
+            mob.die_motion[int(mob.frame)].composite_draw(0, 'h', mob.x, mob.y + 31)
 
