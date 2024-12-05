@@ -5,9 +5,9 @@ from script.state_machine import time_out
 import  config
 import game_world
 
-TIME_PER_ACTION = [1.0, 1.0, 1.5, 1.5, 1.0, 1.0]
+TIME_PER_ACTION = [1.0, 1.0, 1.0, 1.5, 1.0, 1.0]
 ACTION_PER_TIME = [1.0/i for i in TIME_PER_ACTION]
-FRAMES_PER_ACTION = [2, 5 ,6, 4, 3, 3] # idle, walk, skill, die
+FRAMES_PER_ACTION = [2, 5 , 4, 3, 3] # idle, walk, skill, die
 Action_y = [0, 0, 0, 20, 30, 30, 20, 0, 0]
 Die_y=[0, -50, -50, -50, -50, -50]
 class Idle:
@@ -29,7 +29,7 @@ class Idle:
         if mob.direction == 'r':
             mob.idle_motion[int(mob.frame)].draw(mob.x, mob.y + 31, 150, 150)
         else:
-            mob.idle_motion[int(mob.frame)].composite_draw(0, 'h', mob.x, mob.y + 31, 150, 150)
+            mob.idle_motion[int(mob.frame)].composite_draw(0, 'h', mob.x, mob.y + 31,)
 
 
 class Trace():
@@ -54,9 +54,9 @@ class Trace():
     @staticmethod
     def draw(mob):
         if mob.direction == 'l':
-            mob.move_motion[int(mob.frame)].composite_draw(0, 'h', mob.x, mob.y + 31 + Action_y[int(mob.frame)], 150, 150)
+            mob.move_motion[int(mob.frame)].composite_draw(0, 'h', mob.x, mob.y + 31)
         else:
-            mob.move_motion[int(mob.frame)].draw(mob.x, mob.y + 31 + Action_y[int(mob.frame)], 150, 150)
+            mob.move_motion[int(mob.frame)].draw(mob.x, mob.y + 31)
 
 class Attack():
     @staticmethod
@@ -83,9 +83,9 @@ class Attack():
     @staticmethod
     def draw(mob):
         if mob.direction == 'l':
-            mob.skill_motion[int(mob.frame)].composite_draw(0, 'h', mob.x, mob.y + 31 + Action_y[int(mob.frame)], 150, 150)
+            mob.skill_motion[int(mob.frame)].composite_draw(0, 'h', mob.x, mob.y + 31 + Action_y[int(mob.frame)])
         else:
-            mob.skill_motion[int(mob.frame)].draw(mob.x, mob.y + 31 + Action_y[int(mob.frame)], 150, 150)
+            mob.skill_motion[int(mob.frame)].draw(mob.x, mob.y + 31 + Action_y[int(mob.frame)])
 
 
 class JuniorBarlog:
@@ -94,7 +94,7 @@ class JuniorBarlog:
 
         self.x=600
         self.y=115+config.up
-        self.run_speed = ((5 * 1000) / 3600) * 10 / 0.3
+        self.run_speed = ((10 * 1000) / 3600) * 10 / 0.3
         self.hp = 3000
         self.damage=200
 
@@ -105,8 +105,8 @@ class JuniorBarlog:
 
         self.idle_motion =[load_image(f"resource\\barlog_idle ({i+1}).png") for i in range(FRAMES_PER_ACTION[0])]
         self.move_motion = [load_image(f"resource\\barlog_move ({i+1}).png") for i in range(FRAMES_PER_ACTION[1])]
-        self.skill_motion=[load_image(f"resource\\barlog_attack ({i+1}).png") for i in range(FRAMES_PER_ACTION[2])]
-        self.die_motion=[load_image(f"resource\\barlog_die ({i+1}).png") for i in range(FRAMES_PER_ACTION[5])]
+        self.skill_motion=[load_image(f"resource\\barlog_skill2 ({i+1}).png") for i in range(FRAMES_PER_ACTION[2])]
+        self.die_motion=[load_image(f"resource\\barlog_die ({i+1}).png") for i in range(FRAMES_PER_ACTION[4])]
         self.direction = 'r'
         self.dx=0
         self.frame = 0
