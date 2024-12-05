@@ -8,6 +8,7 @@ import game_world
 import game_framework
 import play_mode_2
 import config
+import game_data
 # Game object class here
 
 
@@ -61,6 +62,7 @@ def draw():
 
 def finish():
     game_world.clear()
+    game_data.player_info=[player.hp, player.mp, player.ad]
 
 def update():
     game_world.update()

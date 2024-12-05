@@ -8,7 +8,7 @@ from junior_barlog import JuniorBarlog
 import game_world
 import game_framework
 import config
-
+import game_data
 # Game object class here
 
 
@@ -35,7 +35,7 @@ def handle_events():
 
 def init():
     global player, barlog
-    player = Player()
+    player = Player(game_data.player_info[0], game_data.player_info[1], game_data.player_info[2])
     #barlog = JuniorBarlog()
     game_world.add_object(player, 2)
     background = CaveGround()

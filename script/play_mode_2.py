@@ -8,7 +8,7 @@ from mushmom import Mushmom
 import game_world
 import game_framework
 import config
-
+import game_data
 # Game object class here
 
 
@@ -40,7 +40,7 @@ def init():
     mushmom_event_time = 0
     mushmom = Mushmom()
     game_world.add_object(mushmom, 1)
-    player = Player()
+    player = Player(game_data.player_info[0], game_data.player_info[1], game_data.player_info[2])
     game_world.add_object(player, 2)
     background = Background1()
     game_world.add_object(background, 0)
