@@ -29,7 +29,10 @@ def handle_events():
             pass
         elif event.type == SDL_KEYDOWN and event.key == SDLK_SPACE:
             config.debug_flag = not config.debug_flag
-            pass
+        elif event.type == SDL_KEYDOWN and event.key == SDLK_COMMA:
+            config.volume-=2
+        elif event.type == SDL_KEYDOWN and event.key == SDLK_PERIOD:
+            config.volume+=2
         else:
             if event.type in(SDL_KEYDOWN, SDL_KEYUP):
                 player.handle_event(event) #boy에게 event 전달

@@ -27,7 +27,10 @@ def handle_events():
         elif event.type == SDL_KEYDOWN and event.key == SDLK_SPACE:
 
             config.debug_flag = not config.debug_flag
-            pass
+        elif event.type == SDL_KEYDOWN and event.key == SDLK_COMMA:
+            config.volume-=2
+        elif event.type == SDL_KEYDOWN and event.key == SDLK_PERIOD:
+            config.volume+=2
         else:
             if event.type in(SDL_KEYDOWN, SDL_KEYUP):
                 player.handle_event(event) #boy에게 event 전달
@@ -44,7 +47,7 @@ def init():
     timer = Timer()
     game_world.add_object(timer, 2)
     game_world.add_collision_pair("player:mob", player, timer)
-    background = CaveGround()
+    background = BlockGround()
     game_world.add_object(background, 0)
     platforms = [BlockPlatform(1020, 120), BlockPlatform(870, 170), BlockPlatform(720, 170), BlockPlatform(570, 170),
                  BlockPlatform(420, 170), BlockPlatform(270, 170), BlockPlatform(120, 120)]

@@ -39,7 +39,8 @@ class Background1:
         pass
     def get_bb(self):
         return 0, 0, config.width, config.up+76
-
+    def __del__(self):
+        pass
 
 
 class CavePlatform:
@@ -85,7 +86,8 @@ class CaveGround:
         pass
     def get_bb(self):
         return 0, 0, config.width, config.up+76
-
+    def __del__(self):
+        pass
 
 class BlockPlatform:
     def __init__(self,x=config.width/2,y=config.height/2):
@@ -110,6 +112,7 @@ class BlockPlatform:
 
 class BlockGround:
     def __init__(self):
+        self.back=load_image("resource\\timer_back.png")
         self.ground_up=[load_image("resource\\blue_cave_base_up (1).png"), load_image("resource\\blue_cave_base_up (2).png")]
         self.ground_down = [load_image("resource\\blue_cave_base_down (" + str(i+1) + ").png") for i in range(3)]
         self.ground_bottom = [load_image("resource\\blue_cave_base_bottom (" + str(i + 1) + ").png") for i in range(2)]
@@ -117,10 +120,11 @@ class BlockGround:
         self.down_idx = [randint(0, 2) for _ in range(13)]
         self.bottom_idx = [randint(0, 1) for _ in range(13)]
     def draw(self):
+        self.back.draw(config.width / 2, config.height / 2)
         for i in range(13):
-            self.ground_up[self.up_idx[i]].draw(i*90, up+65, 90, 24)
-            self.ground_down[self.down_idx[i]].draw(i*90, up + 23, 90, 60)
-            self.ground_bottom[self.bottom_idx[i]].draw(i*90, up - 25, 90, 35)
+            self.ground_up[self.up_idx[i]].draw(i*90, config.up+65, 90, 24)
+            self.ground_down[self.down_idx[i]].draw(i*90, config.up + 23, 90, 60)
+            self.ground_bottom[self.bottom_idx[i]].draw(i*90, config.up - 25, 90, 35)
 
 
         if config.debug_flag:
@@ -129,7 +133,8 @@ class BlockGround:
         pass
     def get_bb(self):
         return 0, 0, config.width, config.up+76
-
+    def __del__(self):
+        pass
 
 
 if __name__ == '__main__':
