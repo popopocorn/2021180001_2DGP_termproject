@@ -91,7 +91,7 @@ class Attack():
             mano.skill_motion[int(mano.frame)].draw(mano.x, mano.y + 31+ mano_motion_y[int(mano.frame)], mano.skill_motion[int(mano.frame)].w *1.5, mano.skill_motion[int(mano.frame)].h *1.5)
 
 
-class mano:
+class Mano:
     def __init__(self):
         self.font=load_font(config.font, 30)
 

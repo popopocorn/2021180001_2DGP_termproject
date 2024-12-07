@@ -3,7 +3,7 @@ import random
 
 from background import *
 from player import Player
-from mano import mano
+from mano import Mano
 import game_world
 import game_framework
 import play_mode_2 as next_mode
@@ -40,7 +40,7 @@ def handle_events():
 def init():
     global player, mano, mano_event_time
     mano_event_time = 0
-    mano = mano()
+    mano = Mano()
     game_world.add_object(mano, 1)
     player = Player(game_data.player_info[0], game_data.player_info[1], game_data.player_info[2], game_data.enhance)
     #player = Player()

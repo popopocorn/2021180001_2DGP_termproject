@@ -137,7 +137,7 @@ class Player:
                 Wait: {right_down: Walk, left_down: Walk, skill_down: Skill},
             }
         )
-
+        self.init_enhance()
     def draw(self):
         self.state_machine.draw()
         self.font.draw(self.player_x - 50, self.player_y + 50, "mp: " + str(int(self.mp)), (255, 255, 255))
@@ -210,6 +210,20 @@ class Player:
                     self.non_hit_time_now=get_time()
                     self.player_heart = True
                     self.heart_time = get_time()
+    def init_enhance(self):
+        for e in self.enhance_list:
+            match e:
+                case "공격력 증가":
+                    self.ad=150
+                case "마나 증가":
+                    self.max_mp=450
+                    self.mp+=200
+                case "체력 증가":
+                    self.hp=1500
+                case "마나 회복속도 증가":
+                    self.mpup=3
+                case "무적 프레임 증가":
+                    self.non_hit_time=1.5
 
 class Skill:
     @staticmethod

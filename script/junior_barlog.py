@@ -4,7 +4,7 @@ import game_framework
 from script.state_machine import time_out
 import  config
 import game_world
-#from end_mode import *
+import end_mode
 
 TIME_PER_ACTION = [1.0, 1.0, 1.0, 1.5, 1.0, 1.0]
 ACTION_PER_TIME = [1.0/i for i in TIME_PER_ACTION]
@@ -180,7 +180,7 @@ class Die:
     def exit(mob, e):
         game_world.remove_object(mob)
         #game_framework.change_mode(next_mod)
-        #game_framework.change_mode(end_mode)
+        game_framework.change_mode(end_mode)
     @staticmethod
     def do(mob):
         mob.frame = (mob.frame + FRAMES_PER_ACTION[3]*ACTION_PER_TIME[3] * game_framework.frame_time)%FRAMES_PER_ACTION[3]

@@ -145,7 +145,6 @@ class Timer:
     def handle_collision(self, group, other):
         if group =="skill:mob":
             if not other.is_hit:
-                print("na")
                 self.hp -= other.damage
 
 class mob_atatck:
