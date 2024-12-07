@@ -4,6 +4,7 @@ import game_framework
 from script.state_machine import time_out
 import config
 import game_world
+import item_mode
 import play_mode_2 as next_mod
 
 TIME_PER_ACTION = [1.0, 1.0, 1.0, 1.5]
@@ -115,10 +116,10 @@ class mano:
         self.state_machine.start(Idle)
         self.state_machine.set_transitions(
             {
-                Trace:{can_attack: Attack, die: Die},
-                Attack:{Done: Trace},
-                Idle:{time_out: Trace, die: Die},
-                Die:{time_out: Die},
+                Trace: {can_attack: Attack, die: Die},
+                Attack: {Done: Trace, die: Die},
+                Idle: {time_out: Trace, die: Die},
+                Die: {time_out: Die},
             }
         )
     def update(self):
@@ -182,7 +183,8 @@ class Die:
     @staticmethod
     def exit(mano, e):
         game_world.remove_object(mano)
-        game_framework.change_mode(next_mod)
+        game_framework.push_mode(item_mode)
+        #game_framework.change_mode(next_mod)
     @staticmethod
     def do(mano):
         mano.frame = (mano.frame + FRAMES_PER_ACTION[3]*ACTION_PER_TIME[3] * game_framework.frame_time)%FRAMES_PER_ACTION[3]

@@ -4,7 +4,7 @@ import game_framework
 from script.state_machine import time_out
 import config
 import game_world
-import play_mode_3 as next_mode
+import item_mode
 
 TIME_PER_ACTION = [1.0, 1.0, 1.5, 1.5]
 ACTION_PER_TIME = [1.0/i for i in TIME_PER_ACTION]
@@ -116,7 +116,7 @@ class Mushmom:
         self.state_machine.set_transitions(
             {
                 Trace:{can_attack: Attack, die: Die},
-                Attack:{Done: Trace},
+                Attack:{Done: Trace, die: Die},
                 Idle:{time_out: Trace, die: Die},
                 Die:{time_out: Die},
             }
@@ -179,7 +179,7 @@ class Die:
     @staticmethod
     def exit(mob, e):
         game_world.remove_object(mob)
-        game_framework.change_mode(next_mode)
+        game_framework.push_mode(item_mode)
         #game_framework.quit()
     @staticmethod
     def do(mob):

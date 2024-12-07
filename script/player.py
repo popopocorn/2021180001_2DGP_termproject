@@ -91,7 +91,7 @@ class Idle:
 
 
 class Player:
-    def __init__(self, hp=1000, mp=250, ad=10000, enhance_list=[]):
+    def __init__(self, hp=1000, mp=250, ad=100, enhance_list=[]):
         self.run_speed = ((5 * 1000) / 3600) * 10 / 0.3
         self.hp=hp
         self.max_mp=250

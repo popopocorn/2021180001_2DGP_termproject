@@ -4,7 +4,7 @@ import game_framework
 from script.state_machine import time_out
 from config import *
 import game_world
-import play_mode_4 as next_mode
+import item_mode
 
 TIME_PER_ACTION = [1.0, 1.0, 2.0, 1.0]
 ACTION_PER_TIME = [1.0/i for i in TIME_PER_ACTION]
@@ -72,10 +72,10 @@ class Attack():
     def do(mob):
         mob.frame = (mob.frame + FRAMES_PER_ACTION[2] * ACTION_PER_TIME[2] * game_framework.frame_time) % \
                      FRAMES_PER_ACTION[2]
-        if mob.frame > 8 and not mob.attack:
-            # mob_skill=mob_atatck(mob.x, mob.y)
-            # game_world.add_object(mob_skill, 3)
-            # game_world.add_collision_pair("player:mob", None, mob_skill)
+        if mob.frame > 13 and not mob.attack:
+            mob_skill=mob_atatck(mob.x, mob.y, mob.direction)
+            game_world.add_object(mob_skill, 3)
+            game_world.add_collision_pair("player:mob", None, mob_skill)
             mob.attack=True
         if mob.frame >= FRAMES_PER_ACTION[2] -1 :
             mob.state_machine.add_event(("DONE", (0, 0)))
@@ -115,7 +115,7 @@ class Timer:
         self.state_machine.set_transitions(
             {
                 Trace: {can_attack: Attack, die: Die},
-                Attack: {Done: Trace},
+                Attack: {Done: Trace, die: Die},
                 Idle: {time_out: Trace, die: Die},
                 Die: {time_out: Die},
             }
@@ -149,13 +149,14 @@ class Timer:
                 self.hp -= other.damage
 
 class mob_atatck:
-    def __init__(self, x, y):
+    def __init__(self, x, y, dir):
         self.x = x
         self.y = y
         self.is_mush= False
         self.is_hit = False
         self.start_time=get_time()
         self.damage = 350
+        self.dir =dir
     def draw(self):
         if debug_flag:
             draw_rectangle(*self.get_bb())
@@ -164,8 +165,10 @@ class mob_atatck:
         if get_time() - self.start_time>0.1:
             game_world.remove_object(self)
     def get_bb(self):
-        # fill here
-        return self.x -350, self.y -150, self.x +350, self.y+150
+        if self.dir=="l":
+            return self.x, self.y -75, self.x +250, self.y+75
+        else:
+            return self.x - 250, self.y - 75, self.x, self.y + 75
 
     def handle_collision(self, group, other):
         if group == "player.mob":
@@ -179,7 +182,7 @@ class Die:
     @staticmethod
     def exit(mob, e):
         game_world.remove_object(mob)
-        game_framework.change_mode(next_mode)
+        game_framework.push_mode(item_mode)
         #game_framework.quit()
     @staticmethod
     def do(mob):

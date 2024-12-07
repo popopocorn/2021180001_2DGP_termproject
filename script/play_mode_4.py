@@ -9,6 +9,7 @@ import game_world
 import game_framework
 import config
 import game_data
+#import end_mode as next_mode
 # Game object class here
 
 
@@ -38,7 +39,7 @@ def handle_events():
 
 def init():
     global player, barlog, barlog_event_time
-    player = Player(game_data.player_info[0], game_data.player_info[1], game_data.player_info[2])
+    player = Player(game_data.player_info[0], game_data.player_info[1], game_data.player_info[2], game_data.enhance)
     #player = Player(1000, 1000, 10000)
 
     game_world.add_object(player, 2)
@@ -48,8 +49,9 @@ def init():
     game_world.add_collision_pair("player:mob", player, barlog)
     background = CaveGround()
     game_world.add_object(background, 0)
-    platforms = [BlockPlatform(1020, 120), BlockPlatform(870, 170), BlockPlatform(720, 170), BlockPlatform(570, 170),
-                 BlockPlatform(420, 170), BlockPlatform(270, 170), BlockPlatform(120, 120)]
+    platforms = [CavePlatform(1020, 120), CavePlatform(870, 170), CavePlatform(720, 170), CavePlatform(570, 170),
+                 CavePlatform(420, 170), CavePlatform(270, 170), CavePlatform(120, 120)]
+
     for platform in platforms:
         game_world.add_object(platform, 0)
     game_world.add_collision_pair("player:platform", player, None)
@@ -70,6 +72,7 @@ def finish():
 def update():
     game_world.update()
     game_world.handle_collisions()
+
 
 
 def pause():

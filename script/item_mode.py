@@ -1,31 +1,40 @@
 from pico2d import *
 import game_framework
+import game_world
 import play_mode as next
-import config
+import game_data
+from item_select import Items
+
+is_selected = False
 
 def init():
-    global image, notice, title
-    image = load_image("resource\\back1.png")
-    notice = load_font(config.font, 30)
-    title = load_font(config.font, 60)
+    global items
+    items = Items()
+    game_world.add_object(items, 3)
+
 
 def finish():
-    global image, notice, title
-    del image
-    del notice
-    del title
+    game_world.remove_object(items)
 
 def handle_events():
+    global is_selected, items
     events = get_events()
-    for event in events:
-        if event.type == SDL_QUIT:
-            game_framework.quit()
-        elif event.type == SDL_KEYDOWN:
-            if event.key == SDLK_ESCAPE:
-                game_framework.quit()
-            else:
-                game_framework.change_mode(next)
 
+    for event in events:
+        if event.type == SDL_KEYDOWN:
+            match event.key:
+                case pico2d.SDLK_1:
+                    is_selected = True
+                    game_data.enhance.append(game_data.cards[items.item1])
+                    game_data.cards.pop(items.item1)
+
+                    game_framework.pop_mode()
+                case pico2d.SDLK_2:
+                    is_selected = True
+                    game_data.enhance.append(game_data.cards[items.item2])
+                    game_data.cards.pop(items.item2)
+
+                    game_framework.pop_mode()
 
 
 def update():
@@ -33,11 +42,8 @@ def update():
 
 def draw():
     clear_canvas()
-    image.draw(config.width/2, config.height/2)
-    title.draw(config.width / 2 - 125, config.height / 2, "히어로그", (255, 255, 255))
-    notice.draw(config.width/2-175, config.height/2 - 150, "Press Any Key To Start", (255, 255, 255))
+    game_world.render()
     update_canvas()
-
 
 def pause():
     pass
