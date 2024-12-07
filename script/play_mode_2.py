@@ -62,6 +62,7 @@ def draw():
 
 def finish():
     game_world.clear()
+    game_data.player_info = [player.hp, player.mp, player.ad]
 
 def update():
     game_world.update()

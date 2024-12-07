@@ -38,8 +38,8 @@ def handle_events():
 
 def init():
     global player, barlog, barlog_event_time
-    #player = Player(game_data.player_info[0], game_data.player_info[1], game_data.player_info[2])
-    player = Player(1000, 1000, 10000)
+    player = Player(game_data.player_info[0], game_data.player_info[1], game_data.player_info[2])
+    #player = Player(1000, 1000, 10000)
 
     game_world.add_object(player, 2)
     barlog_event_time = 0

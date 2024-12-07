@@ -4,6 +4,7 @@ import game_framework
 from script.state_machine import time_out
 from config import *
 import game_world
+import play_mode_4 as next_mode
 
 TIME_PER_ACTION = [1.0, 1.0, 2.0, 1.0]
 ACTION_PER_TIME = [1.0/i for i in TIME_PER_ACTION]
@@ -121,6 +122,8 @@ class Timer:
         )
     def update(self):
         self.state_machine.update()
+        if self.hp <= 0:
+            self.state_machine.add_event(('DIE', (0, 0)))
     def handle_events(self, player_location):
         if player_location < self.x:
             self.direction='r'
@@ -176,8 +179,8 @@ class Die:
     @staticmethod
     def exit(mob, e):
         game_world.remove_object(mob)
-        #game_framework.change_mode(next_mod)
-        game_framework.quit()
+        game_framework.change_mode(next_mode)
+        #game_framework.quit()
     @staticmethod
     def do(mob):
         mob.frame = (mob.frame + FRAMES_PER_ACTION[3]*ACTION_PER_TIME[3] * game_framework.frame_time)%FRAMES_PER_ACTION[3]
@@ -187,7 +190,7 @@ class Die:
     @staticmethod
     def draw(mob):
         if mob.direction == 'r':
-            mob.die_motion[int(mob.frame)].draw(mob.x, mob.y + 31 + Die_y[int(mob.frame)])
+            mob.die_motion[int(mob.frame)].draw(mob.x, mob.y + 31)
         else:
-            mob.die_motion[int(mob.frame)].composite_draw(0, 'h', mob.x, mob.y + 31+ Die_y[int(mob.frame)])
+            mob.die_motion[int(mob.frame)].composite_draw(0, 'h', mob.x, mob.y + 31)
 

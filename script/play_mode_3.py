@@ -4,12 +4,11 @@ import random
 
 from background import *
 from player import Player
-from mushmom import Mushmom
 import game_world
 import game_framework
 from timer import Timer
 # Game object class here
-
+import game_data
 
 def handle_events():
 
@@ -38,7 +37,8 @@ def handle_events():
 def init():
     global player, timer, timer_event_time
     timer_event_time = 0
-    player = Player()
+    player = Player(game_data.player_info[0], game_data.player_info[1], game_data.player_info[2])
+    #player = Player()
     game_world.add_object(player, 2)
     timer = Timer()
     game_world.add_object(timer, 2)
@@ -62,6 +62,7 @@ def draw():
 
 def finish():
     game_world.clear()
+    game_data.player_info = [player.hp, player.mp, player.ad]
 
 def update():
     game_world.update()
