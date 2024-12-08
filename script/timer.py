@@ -95,7 +95,7 @@ class Timer:
         self.x=600
         self.y=115+up
         self.run_speed = ((5 * 1000) / 3600) * 10 / 0.3
-        self.hp = 3000
+        self.hp = 3500
         self.damage=200
 
         self.is_mush = False

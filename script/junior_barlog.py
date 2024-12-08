@@ -97,8 +97,8 @@ class JuniorBarlog:
         self.x=600
         self.y=115+config.up
         self.run_speed = ((10 * 1000) / 3600) * 10 / 0.3
-        self.hp = 3000
-        self.damage=200
+        self.hp = 5000
+        self.damage=270
 
         self.is_mush = False
         self.attack=False

@@ -218,7 +218,7 @@ class Player:
         for e in self.enhance_list:
             match e:
                 case "공격력 증가":
-                    self.ad=150
+                    self.ad +=self.ad*(120/100)
 
                 case "마나 증가":
                     self.max_mp=450

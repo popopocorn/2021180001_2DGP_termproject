@@ -57,7 +57,7 @@ class Aura:
         self.type = 1
         self.direction = direction
         self.speed=10
-        self.damage=(1.5 * ad)+randint(-10, 10)
+        self.damage=(1.8 * ad)+randint(-10, 10)
         self.is_hit=False
     def draw(self):
         if self.direction == -1:
@@ -98,7 +98,7 @@ class Brandish:
             self.direction = 1
         else:
             self.direction = -1
-        self.damage = (0.4 * ad) + randint(-10, 10)
+        self.damage = (0.6 * ad) + randint(-4, 4)
         self.is_hit = False
         self.start_time=get_time()
     def draw(self):
