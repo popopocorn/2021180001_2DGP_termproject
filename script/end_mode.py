@@ -11,6 +11,7 @@ def init():
     font = load_font(config.font, 20)
 
 
+
 def finish():
     pass
 

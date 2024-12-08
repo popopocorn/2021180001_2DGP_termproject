@@ -65,9 +65,11 @@ class Attack():
         mob.frame=0
         mob.start_time = get_time()
         mob.attack=False
+        mob.skill_sound.play()
     @staticmethod
     def exit(mob, e):
         mob.start_time=0
+
 
     @staticmethod
     def do(mob):
@@ -108,6 +110,13 @@ class Mushmom:
         self.move_motion = [load_image("resource\\mushmom_move (" + str(i+1) + ").png") for i in range(FRAMES_PER_ACTION[1])]
         self.skill_motion=[load_image("resource\\mushmom_attack ("+str(i+1)+").png") for i in range(FRAMES_PER_ACTION[2])]
         self.die_motion=[load_image("resource\\mushmom_die ("+str(i)+").png") for i in range(FRAMES_PER_ACTION[3])]
+        self.skill_sound=load_music("resource\\mush_skill.mp3")
+        self.skill_sound.set_volume(config.volume)
+        self.hit_sound=load_music("resource\\mush_hit.mp3")
+        self.hit_sound.set_volume(config.volume)
+        self.die_sound=load_music("resource\\mush_die.mp3")
+        self.die_sound.set_volume(config.volume)
+
         self.direction = 'r'
         self.dx=0
         self.frame = 0
@@ -138,7 +147,7 @@ class Mushmom:
     def get_bb(self):
         return self.x -70, self.y - 50, self.x+60, self.y+55
     def draw(self):
-        self.font.draw(self.x - 50, self.y + 120, str(self.hp), (255, 255, 255))
+        self.font.draw(self.x - 50, self.y + 120, str(int(self.hp)), (255, 255, 255))
         self.state_machine.draw()
         if config.debug_flag:
             draw_rectangle(*self.get_bb())
@@ -147,6 +156,7 @@ class Mushmom:
         if group =="skill:mob":
             if not other.is_hit:
                 self.hp -= other.damage
+                self.hit_sound.play()
 
 class mob_atatck:
     def __init__(self, x, y):
@@ -155,7 +165,7 @@ class mob_atatck:
         self.is_mush=True
         self.is_hit = False
         self.start_time=get_time()
-        self.damage = 350
+        self.damage = 300
     def draw(self):
         if config.debug_flag:
             draw_rectangle(*self.get_bb())
@@ -176,6 +186,7 @@ class Die:
     def enter(mob, e):
         mob.start_time = get_time()
         mob.frame=0
+        mob.die_sound.play()
     @staticmethod
     def exit(mob, e):
         game_world.remove_object(mob)

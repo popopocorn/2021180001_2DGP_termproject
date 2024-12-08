@@ -26,7 +26,7 @@ class Background1:
     def __init__(self):
         self.floor = load_image('resource\\19.png')
         self.back=load_image('resource\\back1.png')
-        self.sound=load_music("resource\\bgm1.mp3")
+        self.sound=load_wav("resource\\bgm1.wav")
         self.sound.set_volume(config.volume)
         self.sound.repeat_play()
     def draw(self):
@@ -42,10 +42,6 @@ class Background1:
         pass
     def get_bb(self):
         return 0, 0, config.width, config.up+76
-    def __del__(self):
-        self.sound.stop()
-
-
 
 class CavePlatform:
     def __init__(self,x=config.width/2,y=config.height/2):
@@ -71,17 +67,19 @@ class CavePlatform:
 
 class CaveGround:
     def __init__(self):
+        self.back=load_image("resource\\barlog_back.png")
         self.ground_up=[load_image("resource\\blue_cave_base_up (1).png"), load_image("resource\\blue_cave_base_up (2).png")]
         self.ground_down = [load_image("resource\\blue_cave_base_down (" + str(i+1) + ").png") for i in range(3)]
         self.ground_bottom = [load_image("resource\\blue_cave_base_bottom (" + str(i + 1) + ").png") for i in range(2)]
         self.up_idx=[randint(0, 1)for _ in range(13)]
         self.down_idx = [randint(0, 2) for _ in range(13)]
         self.bottom_idx = [randint(0, 1) for _ in range(13)]
-        self.sound = load_music("resource\\bgm4.mp3")
+        self.sound = load_wav("resource\\bgm4.wav")
         self.sound.set_volume(config.volume)
         self.sound.repeat_play()
 
     def draw(self):
+        self.back.draw(config.width/2, config.height/2)
         for i in range(13):
             self.ground_up[self.up_idx[i]].draw(i*90, config.up+65, 90, 24)
             self.ground_down[self.down_idx[i]].draw(i*90, config.up + 23, 90, 60)
@@ -94,8 +92,6 @@ class CaveGround:
         pass
     def get_bb(self):
         return 0, 0, config.width, config.up+76
-    def __del__(self):
-        self.sound.stop()
 
 class BlockPlatform:
     def __init__(self,x=config.width/2,y=config.height/2):
@@ -121,13 +117,13 @@ class BlockPlatform:
 class BlockGround:
     def __init__(self):
         self.back=load_image("resource\\timer_back.png")
-        self.ground_up=[load_image("resource\\blue_cave_base_up (1).png"), load_image("resource\\blue_cave_base_up (2).png")]
-        self.ground_down = [load_image("resource\\blue_cave_base_down (" + str(i+1) + ").png") for i in range(3)]
-        self.ground_bottom = [load_image("resource\\blue_cave_base_bottom (" + str(i + 1) + ").png") for i in range(2)]
-        self.up_idx=[randint(0, 1)for _ in range(13)]
-        self.down_idx = [randint(0, 2) for _ in range(13)]
-        self.bottom_idx = [randint(0, 1) for _ in range(13)]
-        self.sound = load_music("resource\\bgm3.mp3")
+        self.ground_up=[load_image(f"resource\\blue_block_base_up ({i+1}).png") for i in range(3)]
+        self.ground_down = [load_image("resource\\blue_block_base (" + str(i+1) + ").png") for i in range(6)]
+        self.ground_bottom = [load_image("resource\\blue_block_base_bottom (" + str(i + 1) + ").png") for i in range(3)]
+        self.up_idx=[randint(0, 2)for _ in range(13)]
+        self.down_idx = [randint(0, 5) for _ in range(13)]
+        self.bottom_idx = [randint(0, 2) for _ in range(13)]
+        self.sound = load_wav("resource\\bgm3.wav")
         self.sound.set_volume(config.volume)
         self.sound.repeat_play()
     def draw(self):
@@ -144,8 +140,6 @@ class BlockGround:
         pass
     def get_bb(self):
         return 0, 0, config.width, config.up+76
-    def __del__(self):
-        self.sound.stop()
 
 
 if __name__ == '__main__':

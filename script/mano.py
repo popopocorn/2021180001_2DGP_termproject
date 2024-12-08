@@ -67,6 +67,7 @@ class Attack():
         mano.frame=0
         mano.start_time = get_time()
         mano.attack=False
+        mano.skill_sound.play()
     @staticmethod
     def exit(mano, e):
         mano.start_time=0
@@ -109,6 +110,14 @@ class Mano:
         self.move_motion = [load_image("resource\\mano_move" + str(i) + ".png") for i in range(6)]
         self.skill_motion=[load_image("resource\\mano_skill"+str(i)+".png") for i in range(10)]
         self.die_motion = [load_image("resource\\mano_die (" + str(i + 1) + ").png") for i in range(9)]
+        self.skill_sound=load_music("resource\\mano_skill.mp3")
+        self.skill_sound.set_volume(config.volume)
+        self.hit_sound=load_music("resource\\mano_hit.mp3")
+        self.hit_sound.set_volume(config.volume)
+        self.die_sound=load_music("resource\\mano_die.mp3")
+        self.die_sound.set_volume(config.volume)
+
+
         self.direction = 'r'
         self.dx=0
         self.frame = 0
@@ -148,6 +157,7 @@ class Mano:
         if group =="skill:mob":
             if not other.is_hit:
                 self.hp -= other.damage
+                self.hit_sound.play()
 
 
 
@@ -180,6 +190,7 @@ class Die:
     def enter(mano, e):
         mano.start_time = get_time()
         mano.frame=0
+        mano.die_sound.play()
     @staticmethod
     def exit(mano, e):
         game_world.remove_object(mano)

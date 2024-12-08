@@ -127,6 +127,10 @@ class Player:
         self.aura_blade_motion = [load_image("resource\\auraBlade" +str(i) +".png") for i in range(5)]
         self.brandish_motion = [load_image("resource\\brandish" + str(i)+".png") for i in range(7)]
 
+        self.sound = load_music("resource\\Tombstone.mp3")
+        self.sound.set_volume(config.volume * 2)
+
+
         self.font =load_font(config.font, 16)
         self.event=None
         self.direction = 'r'
@@ -150,6 +154,7 @@ class Player:
             draw_rectangle(*self.get_bb())
     def update(self):
         if self.hp<=0:
+            self.sound.play()
             game_framework.change_mode(end_mode)
         if(self.player_x +10 <self.temp_xy[0] or self.player_x -20 > self.temp_xy[2]) or\
             self.event.type == SDL_KEYDOWN and self.event.key == SDLK_DOWN :
@@ -218,7 +223,7 @@ class Player:
         for e in self.enhance_list:
             match e:
                 case "공격력 증가":
-                    self.ad +=self.ad*(120/100)
+                    self.ad *= (120/100)
 
                 case "마나 증가":
                     self.max_mp=450

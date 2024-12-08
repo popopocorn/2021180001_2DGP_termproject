@@ -7,11 +7,11 @@ import game_world
 import end_mode
 import game_data
 
-TIME_PER_ACTION = [1.0, 1.0, 1.0, 1.5, 1.0, 1.0]
+TIME_PER_ACTION = [1.0, 1.0, 1.0, 1.5, 0.5]
 ACTION_PER_TIME = [1.0/i for i in TIME_PER_ACTION]
 FRAMES_PER_ACTION = [2, 5 , 4, 3, 3] # idle, walk, skill, die
-Action_y = [0, 0, 0, 20, 30, 30, 20, 0, 0]
-Die_y=[0, -50, -50, -50, -50, -50]
+
+
 class Idle:
     @staticmethod
     def enter(mob, e):
@@ -66,6 +66,7 @@ class Attack():
         mob.frame=0
         mob.start_time = get_time()
         mob.attack=False
+        mob.skill_sound.play()
     @staticmethod
     def exit(mob, e):
         mob.start_time=0
@@ -74,8 +75,8 @@ class Attack():
     def do(mob):
         mob.frame = (mob.frame + FRAMES_PER_ACTION[2] * ACTION_PER_TIME[2] * game_framework.frame_time) % \
                      FRAMES_PER_ACTION[2]
-        if mob.frame > 8 and not mob.attack:
-            mob_skill=mob_atatck(mob.x, mob.y)
+        if mob.frame > 3 and not mob.attack:
+            mob_skill=mob_atatck(mob.x, mob.y, mob.direction)
             game_world.add_object(mob_skill, 3)
             game_world.add_collision_pair("player:mob", None, mob_skill)
             mob.attack=True
@@ -85,9 +86,9 @@ class Attack():
     @staticmethod
     def draw(mob):
         if mob.direction == 'l':
-            mob.skill_motion[int(mob.frame)].composite_draw(0, 'h', mob.x, mob.y + 31 + Action_y[int(mob.frame)])
+            mob.skill_motion[int(mob.frame)].composite_draw(0, 'h', mob.x, mob.y + 31)
         else:
-            mob.skill_motion[int(mob.frame)].draw(mob.x, mob.y + 31 + Action_y[int(mob.frame)])
+            mob.skill_motion[int(mob.frame)].draw(mob.x, mob.y + 31)
 
 
 class JuniorBarlog:
@@ -109,6 +110,13 @@ class JuniorBarlog:
         self.move_motion = [load_image(f"resource\\barlog_move ({i+1}).png") for i in range(FRAMES_PER_ACTION[1])]
         self.skill_motion=[load_image(f"resource\\barlog_skill2 ({i+1}).png") for i in range(FRAMES_PER_ACTION[2])]
         self.die_motion=[load_image(f"resource\\barlog_die ({i+1}).png") for i in range(FRAMES_PER_ACTION[4])]
+        self.skill_sound = load_music("resource\\barlog_skill.mp3")
+        self.skill_sound.set_volume(config.volume)
+        self.hit_sound = load_music("resource\\barlog_hit.mp3")
+        self.hit_sound.set_volume(config.volume)
+        self.die_sound = load_music("resource\\barlog_die.mp3")
+        self.die_sound.set_volume(config.volume)
+
         self.direction = 'r'
         self.dx=0
         self.frame = 0
@@ -139,7 +147,7 @@ class JuniorBarlog:
     def get_bb(self):
         return self.x -70, self.y - 50, self.x+60, self.y+55
     def draw(self):
-        self.font.draw(self.x - 50, self.y + 120, str(self.hp), (255, 255, 255))
+        self.font.draw(self.x - 50, self.y + 120, str(int(self.hp)), (255, 255, 255))
         self.state_machine.draw()
         if config.debug_flag:
             draw_rectangle(*self.get_bb())
@@ -148,25 +156,45 @@ class JuniorBarlog:
         if group =="skill:mob":
             if not other.is_hit:
                 self.hp -= other.damage
+                self.hit_sound.play()
 
 class mob_atatck:
-    def __init__(self, x, y):
+    def __init__(self, x, y, dir):
         self.x = x
         self.y = y
         self.is_mush=False
         self.is_hit = False
         self.start_time=get_time()
-        self.damage = 350
+        self.damage = 500
+        self.skill_effect=[load_image(f"resource\\fire_ball ({i+1}).png") for i in range(3)]
+        self.direction = dir
+        if dir == 'l':
+            self.dx = 1
+        else:
+            self.dx = -1
+        self.frame = 0
+        self.run_speed = ((30 * 1000) / 3600) * 10 / 0.3
+
     def draw(self):
+        if self.direction == "r":
+            self.skill_effect[int(self.frame)].draw(self.x, self.y)
+        else:
+            self.skill_effect[int(self.frame)].composite_draw(0, 'h', self.x, self.y)
         if config.debug_flag:
             draw_rectangle(*self.get_bb())
 
     def update(self):
-        if get_time() - self.start_time>0.1:
+        self.frame = (self.frame + FRAMES_PER_ACTION[4] * ACTION_PER_TIME[4] * game_framework.frame_time) % \
+                    FRAMES_PER_ACTION[4]
+        self.x += self.dx * self.run_speed * game_framework.frame_time
+        if self.x < 0 or self.x>config.width:
             game_world.remove_object(self)
     def get_bb(self):
         # fill here
-        return self.x -350, self.y -150, self.x +350, self.y+150
+        if self.direction == 'l':
+            return self.x + 10, self.y -10, self.x +30, self.y+10
+        else:
+            return self.x - 20, self.y - 10, self.x, self.y + 10
 
     def handle_collision(self, group, other):
         if group == "player.mob":
@@ -177,6 +205,7 @@ class Die:
     def enter(mob, e):
         mob.start_time = get_time()
         mob.frame=0
+        mob.die_sound.play()
     @staticmethod
     def exit(mob, e):
         game_world.remove_object(mob)

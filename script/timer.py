@@ -2,11 +2,11 @@ from pico2d import *
 from monster_state import *
 import game_framework
 from script.state_machine import time_out
-from config import *
+import config
 import game_world
 import item_mode
 
-TIME_PER_ACTION = [1.0, 1.0, 2.0, 1.0]
+TIME_PER_ACTION = [1.0, 1.0, 2.3, 1.0]
 ACTION_PER_TIME = [1.0/i for i in TIME_PER_ACTION]
 FRAMES_PER_ACTION = [9, 6 ,25, 8] # idle, walk, skill
 Action_y = [0, 0, 0, 20, 30, 30, 20, 0, 0]
@@ -64,6 +64,7 @@ class Attack():
         mob.frame=0
         mob.start_time = get_time()
         mob.attack=False
+        mob.skill_sound.play()
     @staticmethod
     def exit(mob, e):
         mob.start_time=0
@@ -90,11 +91,11 @@ class Attack():
 
 class Timer:
     def __init__(self):
-        self.font = load_font(font, 30)
+        self.font = load_font(config.font, 30)
 
         self.x=600
-        self.y=115+up
-        self.run_speed = ((5 * 1000) / 3600) * 10 / 0.3
+        self.y=115+config.up
+        self.run_speed = ((15 * 1000) / 3600) * 10 / 0.3
         self.hp = 3500
         self.damage=200
 
@@ -107,6 +108,13 @@ class Timer:
         self.move_motion = [load_image("resource\\timer_move (" + str(i+1) + ").png") for i in range(FRAMES_PER_ACTION[1])]
         self.skill_motion=[load_image("resource\\timer_attack ("+str(i+1)+").png") for i in range(FRAMES_PER_ACTION[2])]
         self.die_motion = [load_image("resource\\timer_die (" + str(i+1) + ").png") for i in range(FRAMES_PER_ACTION[3])]
+        self.skill_sound = load_music("resource\\timer_skill.mp3")
+        self.skill_sound.set_volume(config.volume)
+        self.hit_sound = load_music("resource\\timer_hit.mp3")
+        self.hit_sound.set_volume(config.volume)
+        self.die_sound = load_music("resource\\timer_die.mp3")
+        self.die_sound.set_volume(config.volume)
+
         self.direction = 'r'
         self.dx=0
         self.frame = 0
@@ -137,15 +145,16 @@ class Timer:
     def get_bb(self):
         return self.x -70, self.y - 50, self.x+60, self.y+55
     def draw(self):
-        self.font.draw(self.x - 50, self.y + 120, str(self.hp), (255, 255, 255))
+        self.font.draw(self.x - 50, self.y + 120, str(int(self.hp)), (255, 255, 255))
         self.state_machine.draw()
-        if debug_flag:
+        if config.debug_flag:
             draw_rectangle(*self.get_bb())
 
     def handle_collision(self, group, other):
         if group =="skill:mob":
             if not other.is_hit:
                 self.hp -= other.damage
+                self.hit_sound.play()
 
 class mob_atatck:
     def __init__(self, x, y, dir):
@@ -157,7 +166,7 @@ class mob_atatck:
         self.damage = 350
         self.dir =dir
     def draw(self):
-        if debug_flag:
+        if config.debug_flag:
             draw_rectangle(*self.get_bb())
 
     def update(self):
@@ -178,6 +187,7 @@ class Die:
     def enter(mob, e):
         mob.start_time = get_time()
         mob.frame=0
+        mob.die_sound.play()
     @staticmethod
     def exit(mob, e):
         game_world.remove_object(mob)
