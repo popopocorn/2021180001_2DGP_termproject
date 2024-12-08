@@ -148,8 +148,8 @@ class Player:
         self.init_enhance()
     def draw(self):
         self.state_machine.draw()
-        self.font.draw(self.player_x - 50, self.player_y + 50, "mp: " + str(int(self.mp)), (255, 255, 255))
-        self.font.draw(self.player_x - 50, self.player_y + 70, "hp: " + str(int(self.hp)), (255, 255, 255))
+        # self.font.draw(self.player_x - 50, self.player_y + 50, "mp: " + str(int(self.mp)), (255, 255, 255))
+        # self.font.draw(self.player_x - 50, self.player_y + 70, "hp: " + str(int(self.hp)), (255, 255, 255))
         if config.debug_flag:
             draw_rectangle(*self.get_bb())
     def update(self):
@@ -168,6 +168,10 @@ class Player:
             self.mp += self.mpup * 3 * game_framework.frame_time
         elif self.mp > self.max_mp:
             self.mp=self.max_mp
+        if self.hp < self.max_hp:
+            self.hp += 1 * game_framework.frame_time
+        elif self.hp > self.max_hp:
+            self.hp=self.max_hp
         if get_time()-self.heart_time> self.non_hit_time:
             self.player_heart=False
 

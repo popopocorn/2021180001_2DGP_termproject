@@ -149,10 +149,11 @@ class Mano:
     def get_bb(self):
         return self.x -70, self.y - 50, self.x+60, self.y+55
     def draw(self):
-        self.font.draw(self.x - 50, self.y+120, str(self.hp), (255, 255, 255))
+
         self.state_machine.draw()
         if config.debug_flag:
             draw_rectangle(*self.get_bb())
+            self.font.draw(self.x - 50, self.y + 120, str(self.hp), (255, 255, 255))
     def handle_collision(self, group, other):
         if group =="skill:mob":
             if not other.is_hit:
