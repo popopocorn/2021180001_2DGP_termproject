@@ -2,6 +2,7 @@ from pico2d import *
 import random
 
 from background import *
+from main_ui import Player_status
 from player import Player
 from mano import Mano
 import game_world
@@ -10,6 +11,8 @@ import play_mode_2 as next_mode
 import config
 import game_data
 import item_mode
+import main_ui
+
 # Game object class here
 
 
@@ -37,6 +40,10 @@ def handle_events():
     if curr_time - mano_event_time >= 2.0:
         mano.handle_events(player.get_player_location())
         mano_event_time = get_time()
+    game_data.php = player.hp
+    game_data.mhp = player.max_hp
+    game_data.pmp = player.mp
+    game_data.mmp = player.max_mp
 
 def init():
     global player, mano, mano_event_time
@@ -57,6 +64,8 @@ def init():
         game_world.add_collision_pair("player:platform", None, platform)
     game_world.add_collision_pair("player:mob", player, mano)
     game_world.add_collision_pair("skill:mob", mano, None)
+    ui=Player_status()
+    game_world.add_object(ui, 4)
 
 def draw():
     clear_canvas()

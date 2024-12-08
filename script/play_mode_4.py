@@ -9,6 +9,7 @@ import game_world
 import game_framework
 import config
 import game_data
+from main_ui import Player_status
 #import end_mode as next_mode
 # Game object class here
 
@@ -39,6 +40,10 @@ def handle_events():
     if curr_time - barlog_event_time >= 2.0:
         barlog.handle_events(player.get_player_location())
         barlog_event_time = get_time()
+    game_data.php = player.hp
+    game_data.mhp = player.max_hp
+    game_data.pmp = player.mp
+    game_data.mmp = player.max_mp
 
 def init():
     global player, barlog, barlog_event_time
@@ -61,6 +66,8 @@ def init():
     for platform in platforms:
         game_world.add_collision_pair("player:platform", None, platform)
     game_world.add_collision_pair("skill:mob", barlog, None)
+    ui=Player_status()
+    game_world.add_object(ui, 4)
 
 
 

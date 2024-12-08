@@ -11,6 +11,7 @@ import config
 import game_data
 import play_mode_3 as next_mode
 import item_mode
+from main_ui import Player_status
 # Game object class here
 
 
@@ -39,6 +40,10 @@ def handle_events():
     if curr_time - mushmom_event_time >= 2.0:
         mushmom.handle_events(player.get_player_location())
         mushmom_event_time = get_time()
+    game_data.php = player.hp
+    game_data.mhp = player.max_hp
+    game_data.pmp = player.mp
+    game_data.mmp = player.max_mp
 
 def init():
     global player, mushmom, mushmom_event_time
@@ -58,6 +63,8 @@ def init():
         game_world.add_collision_pair("player:platform", None, platform)
     game_world.add_collision_pair("player:mob", player, mushmom)
     game_world.add_collision_pair("skill:mob", mushmom, None)
+    ui=Player_status()
+    game_world.add_object(ui, 4)
 
 
 def draw():

@@ -1,10 +1,13 @@
 from pico2d import *
 from time import *
+
+import game_data
 from state_machine import *
 import game_world
 import game_framework
 import config
 from skill import *
+import end_mode
 
 TIME_PER_ACTION = [0.5, 1.0, 0.68, 0.5]
 ACTION_PER_TIME = [1.0/i for i in TIME_PER_ACTION]
@@ -93,6 +96,7 @@ class Idle:
 class Player:
     def __init__(self, hp=1000, mp=250, ad=100, enhance_list=[]):
         self.run_speed = ((5 * 1000) / 3600) * 10 / 0.3
+        self.max_hp = 1000
         self.hp=hp
         self.max_mp=250
         self.mp = mp
@@ -146,7 +150,7 @@ class Player:
             draw_rectangle(*self.get_bb())
     def update(self):
         if self.hp<=0:
-            game_framework.quit()
+            game_framework.change_mode(end_mode)
         if(self.player_x +10 <self.temp_xy[0] or self.player_x -20 > self.temp_xy[2]) or\
             self.event.type == SDL_KEYDOWN and self.event.key == SDLK_DOWN :
             self.ground=106+config.up
@@ -215,15 +219,21 @@ class Player:
             match e:
                 case "공격력 증가":
                     self.ad=150
+
                 case "마나 증가":
                     self.max_mp=450
-                    self.mp+=200
+                    self.mp+=100
+
                 case "체력 증가":
-                    self.hp=1500
+                    self.max_hp=1500
+                    self.hp+=150
+
                 case "마나 회복속도 증가":
                     self.mpup=3
+
                 case "무적 프레임 증가":
                     self.non_hit_time=1.5
+
 
 class Skill:
     @staticmethod

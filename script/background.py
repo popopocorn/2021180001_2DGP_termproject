@@ -26,6 +26,9 @@ class Background1:
     def __init__(self):
         self.floor = load_image('resource\\19.png')
         self.back=load_image('resource\\back1.png')
+        self.sound=load_music("resource\\bgm1.mp3")
+        self.sound.set_volume(config.volume)
+        self.sound.repeat_play()
     def draw(self):
         self.back.draw(int(1600/1.5)/2,int( 900/1.5)/2+config.up)
         self.floor.draw(0, config.up)
@@ -40,7 +43,8 @@ class Background1:
     def get_bb(self):
         return 0, 0, config.width, config.up+76
     def __del__(self):
-        pass
+        self.sound.stop()
+
 
 
 class CavePlatform:
@@ -73,6 +77,10 @@ class CaveGround:
         self.up_idx=[randint(0, 1)for _ in range(13)]
         self.down_idx = [randint(0, 2) for _ in range(13)]
         self.bottom_idx = [randint(0, 1) for _ in range(13)]
+        self.sound = load_music("resource\\bgm4.mp3")
+        self.sound.set_volume(config.volume)
+        self.sound.repeat_play()
+
     def draw(self):
         for i in range(13):
             self.ground_up[self.up_idx[i]].draw(i*90, config.up+65, 90, 24)
@@ -87,7 +95,7 @@ class CaveGround:
     def get_bb(self):
         return 0, 0, config.width, config.up+76
     def __del__(self):
-        pass
+        self.sound.stop()
 
 class BlockPlatform:
     def __init__(self,x=config.width/2,y=config.height/2):
@@ -119,6 +127,9 @@ class BlockGround:
         self.up_idx=[randint(0, 1)for _ in range(13)]
         self.down_idx = [randint(0, 2) for _ in range(13)]
         self.bottom_idx = [randint(0, 1) for _ in range(13)]
+        self.sound = load_music("resource\\bgm3.mp3")
+        self.sound.set_volume(config.volume)
+        self.sound.repeat_play()
     def draw(self):
         self.back.draw(config.width / 2, config.height / 2)
         for i in range(13):
@@ -134,7 +145,7 @@ class BlockGround:
     def get_bb(self):
         return 0, 0, config.width, config.up+76
     def __del__(self):
-        pass
+        self.sound.stop()
 
 
 if __name__ == '__main__':
