@@ -1,7 +1,7 @@
 from pico2d import *
 from monster_state import *
 import game_framework
-from script.state_machine import time_out
+from state_machine import time_out
 import config
 import game_world
 import item_mode
