@@ -6,15 +6,13 @@ import loadfile
 
 class Platform:
     def __init__(self,x=1050,y=120):
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-        self.platform = load_image(loadfile.resource_path('21.png'))
-=======
+
         self.platform = load_image(loadfile.resource_path("21.png"))
->>>>>>> Stashed changes
-=======
         self.platform = load_image(loadfile.resource_path("21.png"))
->>>>>>> Stashed changes
+
+        self.platform = load_image(loadfile.resource_path("21.png"))
+        self.platform = load_image(loadfile.resource_path("21.png"))
+
         self.platformxy = [x, y+config.up]
     def draw(self):
         self.platform.draw(self.platformxy[0], self.platformxy[1], 43, 50)
@@ -34,21 +32,22 @@ class Platform:
 
 class Background1:
     def __init__(self):
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-        self.floor = load_image(loadfile.resource_path('19.png'))
-        self.back=load_image('resource\\back1.png')
-        self.sound=load_wav("resource\\bgm1.wav")
-=======
         self.floor = load_image(loadfile.resource_path("19.png"))
         self.back=load_image(loadfile.resource_path("back1.png"))
         self.sound=load_wav(loadfile.resource_path("bgm1.wav"))
->>>>>>> Stashed changes
-=======
+
         self.floor = load_image(loadfile.resource_path("19.png"))
         self.back=load_image(loadfile.resource_path("back1.png"))
         self.sound=load_wav(loadfile.resource_path("bgm1.wav"))
->>>>>>> Stashed changes
+
+        self.floor = load_image(loadfile.resource_path("19.png"))
+        self.back=load_image(loadfile.resource_path("back1.png"))
+        self.sound=load_wav(loadfile.resource_path("bgm1.wav"))
+
+        self.floor = load_image(loadfile.resource_path("19.png"))
+        self.back=load_image(loadfile.resource_path("back1.png"))
+        self.sound=load_wav(loadfile.resource_path("bgm1.wav"))
+
         self.sound.set_volume(config.volume)
         self.sound.repeat_play()
     def draw(self):

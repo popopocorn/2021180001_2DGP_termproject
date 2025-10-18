@@ -170,7 +170,7 @@ class mob_atatck:
         self.is_hit = False
         self.start_time=get_time()
         self.damage = 500
-        self.skill_effect=[load_image(loadfile.resource_path("fire_ball (" + str(i+1) + ".png")) for i in range(3)]
+        self.skill_effect=[load_image(loadfile.resource_path("fire_ball (" + str(i+1) + ").png")) for i in range(3)]
         self.direction = dir
         if dir == 'l':
             self.dx = 1
