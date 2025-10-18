@@ -1,13 +1,14 @@
 from pico2d import *
 import config
 import game_data
+import loadfile
 
 class Player_status:
     def __init__(self):
-        self.status_base=load_image("resource\\status_bar.png")
-        self.hp_bar=load_image("resource\\hp.png")
-        self.mp_bar=load_image("resource\\mp.png")
-        self.alpha=load_image("resource\\gauge.png")
+        self.status_base=load_image(loadfile.resource_path("status_bar.png"))
+        self.hp_bar=load_image(loadfile.resource_path("hp.png"))
+        self.mp_bar=load_image(loadfile.resource_path("mp.png"))
+        self.alpha=load_image(loadfile.resource_path("gauge.png"))
         self.hper = 100
         self.mper = 100
         self.font=load_font(config.font, 25)

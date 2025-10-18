@@ -5,6 +5,7 @@ from state_machine import time_out
 import config
 import game_world
 import item_mode
+import loadfile
 
 TIME_PER_ACTION = [1.0, 1.0, 1.5, 1.5]
 ACTION_PER_TIME = [1.0/i for i in TIME_PER_ACTION]
@@ -106,15 +107,15 @@ class Mushmom:
 
         self.delay=0
 
-        self.idle_motion =[load_image("resource\\mushmom_idle ("+str(i+1)+").png") for i in range(FRAMES_PER_ACTION[0])]
-        self.move_motion = [load_image("resource\\mushmom_move (" + str(i+1) + ").png") for i in range(FRAMES_PER_ACTION[1])]
-        self.skill_motion=[load_image("resource\\mushmom_attack ("+str(i+1)+").png") for i in range(FRAMES_PER_ACTION[2])]
-        self.die_motion=[load_image("resource\\mushmom_die ("+str(i)+").png") for i in range(FRAMES_PER_ACTION[3])]
-        self.skill_sound=load_music("resource\\mush_skill.mp3")
+        self.idle_motion =[load_image(loadfile.resource_path("mushmom_idle ("+str(i+1)+").png")) for i in range(FRAMES_PER_ACTION[0])]
+        self.move_motion = [load_image(loadfile.resource_path("mushmom_move (" + str(i+1) + ").png")) for i in range(FRAMES_PER_ACTION[1])]
+        self.skill_motion=[load_image(loadfile.resource_path("mushmom_attack ("+str(i+1)+").png")) for i in range(FRAMES_PER_ACTION[2])]
+        self.die_motion=[load_image(loadfile.resource_path("mushmom_die ("+str(i)+").png")) for i in range(FRAMES_PER_ACTION[3])]
+        self.skill_sound=load_music(loadfile.resource_path("mush_skill.mp3"))
         self.skill_sound.set_volume(config.volume)
-        self.hit_sound=load_music("resource\\mush_hit.mp3")
+        self.hit_sound=load_music(loadfile.resource_path("mush_hit.mp3"))
         self.hit_sound.set_volume(config.volume)
-        self.die_sound=load_music("resource\\mush_die.mp3")
+        self.die_sound=load_music(loadfile.resource_path("mush_die.mp3"))
         self.die_sound.set_volume(config.volume)
 
         self.direction = 'r'

@@ -4,6 +4,7 @@ import game_world
 import game_data
 import config
 import title_mode
+import loadfile
 
 
 def init():

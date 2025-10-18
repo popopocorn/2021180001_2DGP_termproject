@@ -6,6 +6,7 @@ import config
 import game_world
 import item_mode
 import play_mode_2 as next_mod
+import loadfile
 
 TIME_PER_ACTION = [1.0, 1.0, 1.0, 1.5]
 ACTION_PER_TIME = [1.0/i for i in TIME_PER_ACTION]
@@ -106,15 +107,15 @@ class Mano:
         self.attack=False
         self.delay=0
 
-        self.idle_motion =[load_image("resource\\mano_idle"+str(i)+".png") for i in range(8)]
-        self.move_motion = [load_image("resource\\mano_move" + str(i) + ".png") for i in range(6)]
-        self.skill_motion=[load_image("resource\\mano_skill"+str(i)+".png") for i in range(10)]
-        self.die_motion = [load_image("resource\\mano_die (" + str(i + 1) + ").png") for i in range(9)]
-        self.skill_sound=load_music("resource\\mano_skill.mp3")
+        self.idle_motion =[load_image(loadfile.resource_path("mano_idle"+str(i)+".png")) for i in range(8)]
+        self.move_motion = [load_image(loadfile.resource_path("mano_move" + str(i) + ".png")) for i in range(6)]
+        self.skill_motion=[load_image(loadfile.resource_path("mano_skill"+str(i)+".png")) for i in range(10)]
+        self.die_motion = [load_image(loadfile.resource_path("mano_die (" + str(i + 1) + ").png")) for i in range(9)]
+        self.skill_sound=load_music(loadfile.resource_path("mano_skill.mp3"))
         self.skill_sound.set_volume(config.volume)
-        self.hit_sound=load_music("resource\\mano_hit.mp3")
+        self.hit_sound=load_music(loadfile.resource_path("mano_hit.mp3"))
         self.hit_sound.set_volume(config.volume)
-        self.die_sound=load_music("resource\\mano_die.mp3")
+        self.die_sound=load_music(loadfile.resource_path("mano_die.mp3"))
         self.die_sound.set_volume(config.volume)
 
 

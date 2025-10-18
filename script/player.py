@@ -8,6 +8,7 @@ import game_framework
 import config
 from skill import *
 import end_mode
+import loadfile
 
 TIME_PER_ACTION = [0.5, 1.0, 0.68, 0.5]
 ACTION_PER_TIME = [1.0/i for i in TIME_PER_ACTION]
@@ -119,15 +120,15 @@ class Player:
         self.player_y = 106+config.up
         self.ground=106+config.up
         self.temp_xy=[0, 0, 0, 0]
-        self.walk_motion = [load_image("resource\\walk" + str(x) + ".png") for x in range(4)]
-        self.idle_motion = [load_image("resource\\idle" + str(x) + ".png") for x in range(3)]
-        self.jump_motion = load_image(("resource\\jump.png"))
+        self.walk_motion = [load_image(loadfile.resource_path("walk" + str(x) + ".png")) for x in range(4)]
+        self.idle_motion = [load_image(loadfile.resource_path("idle" + str(x) + ".png")) for x in range(3)]
+        self.jump_motion = load_image((loadfile.resource_path("jump.png")))
 
         self.skill_motion=0
-        self.aura_blade_motion = [load_image("resource\\auraBlade" +str(i) +".png") for i in range(5)]
-        self.brandish_motion = [load_image("resource\\brandish" + str(i)+".png") for i in range(7)]
+        self.aura_blade_motion = [load_image(loadfile.resource_path("auraBlade" +str(i) +".png")) for i in range(5)]
+        self.brandish_motion = [load_image(loadfile.resource_path("brandish" + str(i)+".png")) for i in range(7)]
 
-        self.sound = load_music("resource\\Tombstone.mp3")
+        self.sound = load_music(loadfile.resource_path("Tombstone.mp3"))
         self.sound.set_volume(config.volume * 2)
 
 
@@ -140,7 +141,7 @@ class Player:
         self.state_machine.set_transitions(
             {
                 Walk: {right_down: Idle, left_down: Idle, right_up: Idle, left_up: Idle, skill_down: Skill},
-                Idle: {right_down: Walk, left_down: Walk, left_up: Walk, right_up: Walk, skill_down: Skill},
+                Idle: {right_down: Walk, left_down: Walk, skill_down: Skill},
                 Skill: {time_out: Wait},
                 Wait: {right_down: Walk, left_down: Walk, skill_down: Skill},
             }

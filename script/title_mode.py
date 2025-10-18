@@ -2,11 +2,12 @@ from pico2d import *
 import game_framework
 import play_mode as next
 import config
+import loadfile
 
 def init():
     global image, notice, title, sound
-    sound = load_music("resource\\title.mp3")
-    image = load_image("resource\\back1.png")
+    sound = load_music(loadfile.resource_path("title.mp3"))
+    image = load_image(loadfile.resource_path("back1.png"))
     notice = load_font(config.font, 30)
     title = load_font(config.font, 60)
     sound.set_volume(config.volume)

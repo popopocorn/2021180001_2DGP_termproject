@@ -4,8 +4,11 @@ import game_framework
 from state_machine import time_out
 import  config
 import game_world
-import end_mode
 import game_data
+import end_mode
+
+import loadfile
+
 
 TIME_PER_ACTION = [1.0, 1.0, 1.0, 1.5, 0.5]
 ACTION_PER_TIME = [1.0/i for i in TIME_PER_ACTION]
@@ -106,15 +109,15 @@ class JuniorBarlog:
 
         self.delay=0
 
-        self.idle_motion =[load_image(f"resource\\barlog_idle ({i+1}).png") for i in range(FRAMES_PER_ACTION[0])]
-        self.move_motion = [load_image(f"resource\\barlog_move ({i+1}).png") for i in range(FRAMES_PER_ACTION[1])]
-        self.skill_motion=[load_image(f"resource\\barlog_skill2 ({i+1}).png") for i in range(FRAMES_PER_ACTION[2])]
-        self.die_motion=[load_image(f"resource\\barlog_die ({i+1}).png") for i in range(FRAMES_PER_ACTION[4])]
-        self.skill_sound = load_music("resource\\barlog_skill.mp3")
+        self.idle_motion =[load_image(loadfile.resource_path("barlog_idle (" + str(i+1) + ").png")) for i in range(FRAMES_PER_ACTION[0])]
+        self.move_motion = [load_image(loadfile.resource_path("barlog_move (" + str(i+1) + ").png")) for i in range(FRAMES_PER_ACTION[1])]
+        self.skill_motion=[load_image(loadfile.resource_path("barlog_skill2 (" + str(i+1) + ").png")) for i in range(FRAMES_PER_ACTION[2])]
+        self.die_motion=[load_image(loadfile.resource_path("barlog_die (" + str(i+1) + ").png")) for i in range(FRAMES_PER_ACTION[4])]
+        self.skill_sound = load_music(loadfile.resource_path("barlog_skill.mp3"))
         self.skill_sound.set_volume(config.volume)
-        self.hit_sound = load_music("resource\\barlog_hit.mp3")
+        self.hit_sound = load_music(loadfile.resource_path("barlog_hit.mp3"))
         self.hit_sound.set_volume(config.volume)
-        self.die_sound = load_music("resource\\barlog_die.mp3")
+        self.die_sound = load_music(loadfile.resource_path("barlog_die.mp3"))
         self.die_sound.set_volume(config.volume)
 
         self.direction = 'r'
@@ -167,7 +170,7 @@ class mob_atatck:
         self.is_hit = False
         self.start_time=get_time()
         self.damage = 500
-        self.skill_effect=[load_image(f"resource\\fire_ball ({i+1}).png") for i in range(3)]
+        self.skill_effect=[load_image(loadfile.resource_path("fire_ball (" + str(i+1) + ".png")) for i in range(3)]
         self.direction = dir
         if dir == 'l':
             self.dx = 1

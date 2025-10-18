@@ -3,6 +3,7 @@ import game_framework
 import game_world
 from random import randint
 import config
+import loadfile
 
 TIME_PER_ACTION = [0.68, 0.5, 0.78]
 ACTION_PER_TIME = [1.0/i for i in TIME_PER_ACTION]
@@ -18,7 +19,7 @@ brandish_y = [-20, -5, 3, 0, -1, -18, -22, -30, -30, -35, -50]
 
 class Aura_blade:
     def __init__(self, x, y, direction, ad):
-        self.image =[load_image("resource\\aura_blade_effect (" + str(i+1)+").png") for i in range(FRAMES_PER_ACTION[0])]
+        self.image =[load_image(loadfile.resource_path("aura_blade_effect (" + str(i+1)+").png")) for i in range(FRAMES_PER_ACTION[0])]
         self.frame=0
         self.x=x
         self.y=y
@@ -50,7 +51,7 @@ class Aura_blade:
 
 class Aura:
     def __init__(self, x, y, direction, ad):
-        self.image =[load_image("resource\\aura_shoot (" + str(i+1)+").png") for i in range(FRAMES_PER_ACTION[1])]
+        self.image =[load_image(loadfile.resource_path("aura_shoot (" + str(i+1)+").png")) for i in range(FRAMES_PER_ACTION[1])]
         self.frame=0
         self.x=x
         self.y=y
@@ -93,7 +94,7 @@ class Brandish:
         self.x = x
         self.y = y
         self.type = 2
-        self.image = [load_image("resource\\brandish_effect" + str(i) + ".png") for i in range(FRAMES_PER_ACTION[self.type])]
+        self.image = [load_image(loadfile.resource_path("brandish_effect" + str(i) + ".png")) for i in range(FRAMES_PER_ACTION[self.type])]
         if direction == 'r':
             self.direction = 1
         else:
