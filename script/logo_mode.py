@@ -2,6 +2,7 @@ from pico2d import *
 import game_framework
 import title_mode as next
 import config
+import loadfile
 
 TIME_PER_ACTION = 2
 ACTION_PER_TIME = 1.0/TIME_PER_ACTION
@@ -13,10 +14,10 @@ def init():
     global running
     global logo_start_time
     global logo_frame, sound
-    sound = load_music("resource\\logo.mp3")
+    sound = load_music(loadfile.resource_path("logo.mp3"))
     sound.set_volume(config.volume)
     sound.play()
-    image=[load_image("resource\\Wizet (" + str(i+1) + ").png") for i in range(55)]
+    image=[load_image(loadfile.resource_path("Wizet (" + str(i+1) + ").png")) for i in range(55)]
     running=True
     logo_start_time=get_time()
     logo_frame=0

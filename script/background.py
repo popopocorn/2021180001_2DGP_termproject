@@ -1,10 +1,12 @@
 from pico2d import *
 import config
 from random import randint
+import loadfile
+
 
 class Platform:
     def __init__(self,x=1050,y=120):
-        self.platform = load_image('resource\\21.png')
+        self.platform = load_image(loadfile.resource_path('21.png'))
         self.platformxy = [x, y+config.up]
     def draw(self):
         self.platform.draw(self.platformxy[0], self.platformxy[1], 43, 50)
@@ -24,7 +26,7 @@ class Platform:
 
 class Background1:
     def __init__(self):
-        self.floor = load_image('resource\\19.png')
+        self.floor = load_image(loadfile.resource_path('19.png'))
         self.back=load_image('resource\\back1.png')
         self.sound=load_wav("resource\\bgm1.wav")
         self.sound.set_volume(config.volume)
